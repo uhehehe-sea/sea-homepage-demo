@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -445,6 +445,12 @@ textarea{flex:1;resize:none;font:inherit;font-size:16px;color:var(--ink);backgro
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+// ===== 사이트 기본 언어: 'ko' = 한국어판, 'en' = 영문판 (여기 한 곳만 바꾸면 됨) =====
+const DEFAULT_LANG='en';
+// ===== 인트로 큐브 크기 배율 (1 = 기본) =====
+const CUBE_SCALE=1.4;
+</script>
+<script>
 {
 const COLS=[['#f46340','#fc682c','#f9811a','#fc8609'],['#e74d4f','#ed6041','#f07334','#f28218'],['#ef3a4d','#ef4f48','#ef5f42','#f2722d'],['#df1946','#eb3b5b','#e44c4a','#f56641']];
 const POS=[0,5,11,16];
@@ -643,10 +649,10 @@ function setLang(l){
   document.getElementById('sites').innerHTML=SITES.map(([n,r,f])=>`<p><i class="lg ${f?'f':'s'}"></i><b>${n}</b><span>${r}</span></p>`).join('');
   drawMap();if(window.__drawChips)window.__drawChips();
   document.querySelectorAll('#probs .rv,#steps .rv,#inds .rv').forEach(el=>el.classList.add('on'));
-  try{localStorage.setItem('sea-lang',l);}catch{}
+  try{localStorage.setItem('sea-lang-v2',l);}catch{}
 }
 document.querySelectorAll('.lang').forEach(b=>b.addEventListener('click',()=>setLang(LANG==='en'?'ko':'en')));
-let saved='ko';try{saved=localStorage.getItem('sea-lang')||'ko';}catch{}
+let saved=DEFAULT_LANG;try{saved=localStorage.getItem('sea-lang-v2')||DEFAULT_LANG;}catch{}
 setLang(saved==='en'?'en':'ko');
 
 // 히어로 영상: 파일이 있을 때만 보이고, 화면 밖이면 멈추고, 동작 줄이기 설정이면 재생 안 함
@@ -757,7 +763,7 @@ function targets(){
   idx.forEach((i,n)=>{const p=pts[Math.floor(n*pts.length/idx.length)]||[0,0];tx[i]=p[0];ty[i]=p[1];});
 }
 function resize(){const r=cv.getBoundingClientRect();if(!r.width)return;W=r.width;H=r.height;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
-  if(T){T.renderer.setSize(W,H,false);T.cam.aspect=W/H;const k=H/(2*Math.tan(8*Math.PI/180));T.k=k;const d=Math.max(20*k/((W/H<1?.5:.42)*Math.min(W,H)),52)*(W/H<1?1.08:1),el=.46;T.cam.position.set(0,d*Math.sin(el),d*Math.cos(el));T.cam.lookAt(0,W/H<1?-2.2:-6,0);T.cam.updateProjectionMatrix();
+  if(T){T.renderer.setSize(W,H,false);T.cam.aspect=W/H;const k=H/(2*Math.tan(8*Math.PI/180));T.k=k;const d=Math.max(20*k/((W/H<1?.5:.42)*CUBE_SCALE*Math.min(W,H)),52)*(W/H<1?1.08:1),el=.46;T.cam.position.set(0,d*Math.sin(el),d*Math.cos(el));T.cam.lookAt(0,W/H<1?-2.2:-1.2,0);T.cam.updateProjectionMatrix();
     // SEA 글자 넓이 = 로고(앞면 20단위) 화면 넓이
     const wm=document.querySelector('.wordmark');if(wm){const want=20*k/d;wm.style.fontSize='100px';wm.style.letterSpacing='.08em';
       const sp=wm.querySelector('span')||wm;const r0=sp.getBoundingClientRect().width||1;wm.style.fontSize=(100*want/r0).toFixed(1)+'px';}}

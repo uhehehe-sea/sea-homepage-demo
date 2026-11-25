@@ -13,6 +13,11 @@
 - **GitHub Pages / 다른 정적 호스팅**: 폴더 내용을 그대로 업로드
 - 로컬 확인: 폴더에서 `python -m http.server` 후 http://localhost:8000
 
+## 설정 바꾸기
+`index.html` 맨 위 `<script>` 안:
+- `const DEFAULT_LANG='en';` (현재 영문판 기본) → `'ko'` 로 바꾸면 처음 열 때 한국어판 (방문자가 KO/EN 버튼으로 고른 언어는 그 브라우저에 저장돼 그쪽이 우선)
+- `const CUBE_SCALE=1.4;` → 인트로 큐브 크기 배율 (1 = 이전 크기)
+
 ## 영상 넣기
 `assets/video/hero.mp4` 를 넣고 다시 배포. 코드 수정 필요 없음.
 영상이 없으면 사진(`img/lab.webp`)이 보이고, 화면 밖이면 영상이 멈추며, '동작 줄이기' 설정이면 재생하지 않습니다.
