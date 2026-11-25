@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S.E.A. Wet Process</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 정밀한 장비 회사 — 차분하고 자신감 있게, 숫자와 공정으로 말한다
+   IDEA: PP 판재처럼 우윳빛 흰 바탕 위에 로고 그라데이션(오렌지→레드)과 워드마크 마젠타
+   PICTURE: 히어로 전면 사진(천천히 흐르는 드리프트) + 실제 장비 사진, 배치/인라인 드래그 비교
+   COLOUR and TYPE: #f2f1ec 바탕, 잉크 #121216, 강조 #ff007d·#fc8609, Geist + Noto Sans KR
+   LAYOUT: JK 구조 — 스티키 헤더 → 히어로 → 문제 → 비교 → 공정 → 제품 → 체크 → 계산기 → 분야·거점 → FAQ → AI 상담 → CTA → 4열 푸터 + 모바일 하단 바 */
+:root{color-scheme:light;--bg:#f2f1ec;--bg2:#e9e8e2;--pp:#f8f7f3;--ink:#121216;--muted:#66656f;--line:rgba(40,35,20,.11);
+  --mag:#ff007d;--org:#fc8609;--red:#e8304d;--grad:linear-gradient(100deg,#fc8609,#f2364d 55%,#ff007d);--header-h:72px}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:light}
+*{box-sizing:border-box;min-width:0;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 16px)}
+body{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),var(--bg);
+  color:var(--ink);font:16px/1.6 Geist,"Noto Sans KR",system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased;word-break:keep-all}
+body.lock{overflow:hidden}
+a{color:inherit}
+::selection{background:var(--mag);color:#fff}
+img{display:block;max-width:100%}
+/* ---------- intro ---------- */
+#intro{position:fixed;inset:0;z-index:300;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),radial-gradient(60% 55% at 50% 48%,#f8f7f3 0,#eceae4 100%);transition:opacity .9s}
+#intro.gone{opacity:0;pointer-events:none}
+#cubes3d{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+#fx{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:pointer}
+#fx:focus-visible{outline:2px solid var(--mag);outline-offset:-10px;border-radius:20px}
+#cards{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#cards figure{position:absolute;left:0;top:0;width:180px;transform-origin:0 0;border-radius:14px;overflow:hidden;opacity:0;will-change:transform,opacity;
+  background:rgba(255,255,255,.82);border:1px solid rgba(10,10,20,.08);backdrop-filter:blur(8px);box-shadow:0 20px 50px -20px rgba(20,10,30,.35)}
+#cards img{display:block;width:100%;height:120px;object-fit:contain;padding:10px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.18))}
+#cards img.cover{object-fit:cover;padding:0}
+#cards figcaption{font-size:12px;color:#33333c;font-weight:500;padding:6px 10px 8px;border-top:1px solid rgba(10,10,20,.07)}
+.wordmark span{display:inline-block;margin-right:-.08em}
+.wordmark{position:absolute;left:0;right:0;bottom:clamp(54px,8vh,88px);text-align:center;font:800 clamp(40px,7vw,88px)/1 Geist,Inter,system-ui,sans-serif;letter-spacing:.08em;color:#c8005f;pointer-events:none;transition:opacity .5s}
+body:not(.lock) .wordmark,#intro.gone .wordmark{opacity:0}
+.hint{position:absolute;left:0;right:0;bottom:clamp(18px,3vh,32px);text-align:center;color:var(--muted);font-size:14px;letter-spacing:.01em;pointer-events:none;transition:opacity .4s}
+.hint b{color:var(--ink);font-weight:600}
+.skip{position:absolute;right:max(3vw,14px);top:max(2.4vh,14px);font:inherit;font-size:13px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:10px 16px;min-height:40px;cursor:pointer}
+.skip:hover{color:var(--ink)}
+
+
+main,.site-header,footer,.mobile-bar{transition:opacity .9s}
+body.lock main,body.lock .site-header,body.lock footer,body.lock .mobile-bar{opacity:0;pointer-events:none}
+.wrap{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px)}
+.band{padding:clamp(64px,8vw,112px) 0}
+.band.alt{background:var(--pp);border-block:1px solid var(--line)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink)}
+.eyebrow i{width:8px;height:8px;border-radius:2px;background:var(--grad)}
+h1{font-size:clamp(40px,5.6vw,76px);line-height:1.03;letter-spacing:-.04em;font-weight:800;text-wrap:balance}
+h2{font-size:clamp(30px,3.8vw,50px);line-height:1.06;letter-spacing:-.035em;font-weight:800;text-wrap:balance}
+h3{font-size:20px;letter-spacing:-.02em;line-height:1.25}
+.sub{color:var(--muted);font-size:17px;max-width:60ch}
+.note{color:var(--muted);font-size:13px;margin-top:14px}
+.sec-h{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.sec-h > div{max-width:720px}.sec-h h2{margin-top:10px}.sec-h .sub{margin-top:12px}
+.btn{font:inherit;font-weight:700;font-size:15px;color:#fff;background:var(--grad);border:0;border-radius:12px;padding:0 20px;min-height:48px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--pp);color:var(--ink);border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--mag);outline-offset:2px}
+
+/* 1. header — sticky */
+.site-header{position:sticky;top:0;z-index:100;height:var(--header-h);background:rgba(242,241,236,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);transition:box-shadow .3s,opacity .9s}
+.site-header.is-stuck{box-shadow:0 8px 30px rgba(40,30,10,.12)}
+.hd{height:100%;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex:none}
+.brand b{display:block;font-weight:800;letter-spacing:.14em;font-size:16px;line-height:1.1}.brand b i{font-style:normal;color:var(--mag)}
+.brand small{display:block;font-size:11px;color:var(--muted);letter-spacing:.02em}
+.nav{display:flex;align-items:center;gap:2px;margin-left:auto}
+.nav > a,.nav .dd > button{font:inherit;font-size:14px;color:var(--ink);background:none;border:0;text-decoration:none;padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.nav > a:hover,.nav .dd > button:hover,.nav .dd.open > button{background:rgba(40,35,20,.06)}
+.dd{position:relative}
+.dd > button::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);margin-left:4px}
+.menu{position:absolute;top:calc(100% + 8px);left:-8px;width:340px;background:var(--pp);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 20px 50px -16px rgba(40,30,10,.3);display:none}
+.dd.open .menu,.dd:focus-within .menu{display:block}
+.menu a{display:block;text-decoration:none;padding:10px 12px;border-radius:10px}
+.menu a:hover{background:rgba(40,35,20,.06)}
+.menu b{display:block;font-size:14px}.menu span{display:block;font-size:13px;color:var(--muted)}
+.hd-r{display:flex;align-items:center;gap:12px;flex:none}
+.tel{font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.lang{display:inline-flex;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line);background:var(--pp);cursor:pointer;font:inherit;flex:none}
+.lang b{font-size:12px;font-weight:700;padding:6px 10px;border-radius:999px;color:var(--muted);min-width:34px;text-align:center}
+.lang b.on{background:var(--ink);color:#fff}
+.intro-lang{position:absolute;left:max(3vw,14px);top:max(2.4vh,14px);z-index:2}
+[hidden]{display:none!important}
+.certs{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.certs span{font-size:14px;font-weight:700;padding:10px 16px;border-radius:12px;background:var(--pp);border:1px solid var(--line)}
+.talent{display:grid;gap:14px;margin-top:14px}.talent div{border-top:1px solid var(--line);padding-top:14px}.talent p{color:var(--muted);font-size:15px;margin-top:4px}
+.burger{display:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--pp);cursor:pointer;place-items:center}
+.burger i,.burger i::before,.burger i::after{display:block;width:18px;height:2px;background:var(--ink);position:relative;border-radius:2px}
+.burger i::before,.burger i::after{content:"";position:absolute;left:0}.burger i::before{top:-6px}.burger i::after{top:6px}
+.nav .m-only{display:none}
+
+/* 2. hero — full-bleed media with drift + scrim */
+.hero{position:relative;min-height:min(86vh,780px);display:flex;align-items:center;overflow:hidden}
+.hero-media{position:absolute;inset:0}
+.hero-media img,.hero-media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(1.06) saturate(.9);transform:scale(1.06);animation:heroDrift 26s ease-in-out infinite alternate}
+@keyframes heroDrift{0%{transform:scale(1.06) translate(0,0)}50%{transform:scale(1.1) translate(-1.5%,1%)}100%{transform:scale(1.07) translate(1%,-1%)}}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(242,241,236,.97) 0,rgba(242,241,236,.88) 38%,rgba(242,241,236,.25) 72%,rgba(242,241,236,.05)),linear-gradient(0deg,rgba(242,241,236,.6),transparent 30%),
+  linear-gradient(rgba(40,35,20,.05) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(40,35,20,.05) 1px,transparent 1px) 0 0/48px 48px}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,var(--bg))}
+.hero .wrap{position:relative;z-index:2;width:100%}
+.hero-copy{max-width:640px}
+.hero h1{margin:16px 0 20px}
+.hero .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero-stats{display:flex;gap:clamp(20px,4vw,48px);flex-wrap:wrap;margin-top:40px}
+.hero-stats p{display:grid}.hero-stats b{font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.03em;line-height:1.1;white-space:nowrap}
+.hero-stats p > span{font-size:13px;color:var(--muted)}
+.media-note{position:absolute;right:max(4vw,16px);bottom:28px;z-index:2;font-size:12px;color:#fff;background:rgba(18,18,22,.55);padding:5px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+
+/* 3. problem */
+.probs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.prob{background:var(--pp);border:1px solid var(--line);border-radius:20px;padding:24px}
+.prob .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(255,0,125,.08);color:var(--mag);font-weight:800;margin-bottom:16px}
+.prob p{color:var(--muted);font-size:15px;margin-top:8px}
+.prob em{font-style:normal;color:var(--ink);font-weight:600}
+
+/* 4. compare */
+.cmp{position:relative;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--pp);aspect-ratio:16/8;user-select:none;touch-action:pan-y}
+.cmp figure{position:absolute;inset:0;display:grid;place-items:center;padding:6% 8%}
+.cmp figure img{max-height:100%;object-fit:contain;filter:drop-shadow(0 20px 30px rgba(40,30,10,.18))}
+.cmp .b{background:linear-gradient(160deg,#fff,#f0eee8);clip-path:inset(0 0 0 var(--x,50%))}
+.cmp .a{background:linear-gradient(160deg,#f6f4ee,#ebe9e2)}
+.cmp .lab{position:absolute;top:16px;font-size:13px;font-weight:700;background:var(--pp);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.cmp .a .lab{left:16px}.cmp .b .lab{right:16px}
+.cmp .handle{position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;background:var(--ink);transform:translateX(-1px)}
+.cmp .handle span{position:absolute;top:50%;left:50%;width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;transform:translate(-50%,-50%);font-size:15px}
+.cmp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize}
+.cmp-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}
+.cmp-legend p{font-size:15px;color:var(--muted)}.cmp-legend b{color:var(--ink);display:block;font-size:16px}
+
+/* 5. process steps */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;counter-reset:s}
+.step{position:relative;background:var(--pp);border:1px solid var(--line);border-radius:18px;padding:20px 18px 18px;counter-increment:s}
+.step::before{content:counter(s,decimal-leading-zero);font-size:13px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.step h3{font-size:17px;margin-top:8px}.step p{color:var(--muted);font-size:14px;margin-top:6px}
+
+/* 6. products */
+.filters{display:flex;gap:4px;flex-wrap:wrap;background:var(--pp);border:1px solid var(--line);border-radius:14px;padding:4px}
+.filters button{font:inherit;font-size:14px;color:var(--muted);background:none;border:0;border-radius:10px;padding:0 16px;min-height:40px;cursor:pointer}
+.filters button[aria-selected=true]{background:var(--ink);color:#fff;font-weight:600}
+.prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.prod{position:relative;border-radius:24px;padding:24px;background:linear-gradient(170deg,#fbfaf7,#f4f3ee 70%);border:1px solid var(--line);display:flex;flex-direction:column;cursor:pointer;transition:transform .3s,border-color .3s;min-height:420px}
+.prod:hover,.prod:focus-visible{transform:translateY(-3px);border-color:rgba(255,0,125,.45);outline:none}
+.prod .tag{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}.prod .tag i{width:7px;height:7px;border-radius:2px;background:var(--grad)}
+.prod img{height:200px;width:100%;object-fit:contain;margin:14px 0;filter:drop-shadow(0 18px 22px rgba(40,30,10,.18))}
+.prod h3{margin-top:auto}.prod p{color:var(--muted);font-size:15px;margin-top:6px}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.keys span{font-size:13px;padding:5px 10px;border-radius:999px;background:rgba(40,35,20,.05);border:1px solid var(--line);white-space:nowrap}
+.more{position:absolute;right:20px;top:20px;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line);font-size:20px}
+dialog{margin:auto;width:min(760px,calc(100% - 24px));max-height:calc(100% - 40px);border-radius:24px;border:1px solid var(--line);background:var(--pp);color:var(--ink);padding:0}
+dialog::backdrop{background:rgba(40,35,20,.35);backdrop-filter:blur(4px)}
+.dlg{padding:24px;display:grid;gap:14px}.dlg img{max-height:280px;object-fit:contain;margin:0 auto}
+.dlg dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 18px;font-size:15px}.dlg dt{color:var(--muted);white-space:nowrap}
+.dlg .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+.x{font:inherit;font-size:22px;background:var(--bg);border:1px solid var(--line);border-radius:12px;width:44px;height:44px;cursor:pointer}
+
+/* 7. self-check  8. planner */
+.tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.tool{background:var(--pp);border:1px solid var(--line);border-radius:24px;padding:26px}
+.tool h3{font-size:22px}.tool > p{color:var(--muted);font-size:15px;margin-top:6px}
+.q{margin-top:18px}.q > b{display:block;font-size:14px;margin-bottom:8px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts button{font:inherit;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 14px;min-height:40px;cursor:pointer;color:var(--ink)}
+.opts button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.result{margin-top:20px;border-radius:16px;padding:16px 18px;background:linear-gradient(120deg,rgba(252,134,9,.1),rgba(255,0,125,.08));border:1px solid rgba(255,0,125,.18)}
+.result small{display:block;color:var(--muted);font-size:13px}.result b{display:block;font-size:22px;letter-spacing:-.02em;margin-top:2px}.result p{font-size:14px;color:var(--muted);margin-top:4px}
+.field{margin-top:18px}.field label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:8px}
+.field output{font-variant-numeric:tabular-nums;color:var(--mag)}
+input[type=range]{width:100%;accent-color:var(--mag);height:28px}
+.big{font-size:clamp(44px,6vw,64px);font-weight:800;letter-spacing:-.04em;line-height:1;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.units{display:flex;gap:5px;flex-wrap:wrap;margin-top:12px}.units i{width:20px;height:28px;border-radius:4px;background:var(--grad)}
+
+/* 9. industries + coverage */
+.inds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:40px}
+.ind{border-top:2px solid var(--ink);padding-top:16px}.ind p{color:var(--muted);font-size:15px;margin-top:6px}
+.netbox{position:relative;border-radius:24px;border:1px solid var(--line);background:var(--pp);overflow:hidden}
+.fig{position:relative;min-height:400px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+#map .grid{fill:rgba(40,35,20,.14)}#map text{fill:var(--ink);font:600 13px Geist,"Noto Sans KR",sans-serif}
+.sites{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0 18px;margin-top:18px}
+.sites p{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}.sites span{color:var(--muted);font-size:13px;margin-left:auto}
+.lg{display:inline-block;width:9px;height:9px;border-radius:50%}.lg.f{background:var(--mag)}.lg.s{background:var(--org)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}.legend span{display:flex;align-items:center;gap:8px}
+.award{position:relative;border-radius:24px;overflow:hidden;min-height:340px;display:grid;align-items:end;margin-top:40px}
+.award img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.award::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(12,10,14,.88),rgba(12,10,14,.1) 65%)}
+.award div{position:relative;z-index:1;padding:clamp(22px,4vw,40px);color:#fff}.award p{opacity:.85;margin-top:6px}
+
+/* 10. FAQ + notices */
+.two{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,64px)}
+.faq details,.notices details{border-top:1px solid var(--line)}
+.faq summary,.notices summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;cursor:pointer;list-style:none;font-weight:600}
+.faq summary::-webkit-details-marker,.notices summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;font-weight:400;color:var(--muted);transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p,.notices details p{color:var(--muted);font-size:15px;padding:0 0 18px}
+.notices summary{font-weight:500;font-size:15px}.notices time{color:var(--muted);font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* 11. AI consult */
+.consult{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(24px,4vw,56px);align-items:start}
+.ctc div{display:grid;grid-template-columns:5em minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.ctc dt{color:var(--muted);font-size:14px}.ctc dd{font-weight:600;overflow-wrap:anywhere}
+.cp{font:inherit;font-size:13px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:0 12px;min-height:36px;cursor:pointer}
+.chat{border-radius:24px;border:1px solid var(--line);background:var(--pp);display:flex;flex-direction:column;height:min(620px,80vh);overflow:hidden;box-shadow:0 40px 100px -50px rgba(255,0,125,.35)}
+.chat-h{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.chat-h small{margin-left:auto;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:6px}
+.chat-h small::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}.chat.on .chat-h small::before{background:#22b866}
+.log{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:86%;padding:11px 14px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.55}
+.msg.u{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:5px}
+.msg.a{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg.e{align-self:center;color:var(--muted);font-size:13px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 12px}
+.chips button{font:inherit;font-size:13px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:0 13px;min-height:36px;cursor:pointer}
+.chat form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+textarea{flex:1;resize:none;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;height:50px}
+.send{font:inherit;font-weight:700;color:#fff;background:var(--grad);border:0;border-radius:14px;padding:0 18px;min-height:50px;cursor:pointer}.send:disabled{opacity:.4;cursor:default}
+
+/* 12. CTA */
+.cta-band{border-radius:28px;padding:clamp(32px,5vw,64px);background:var(--ink);color:#fff;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;position:relative;overflow:hidden}
+.cta-band::before{content:"";position:absolute;right:-10%;top:-60%;width:60%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,0,125,.45),transparent)}
+.cta-band > *{position:relative}.cta-band p{color:rgba(255,255,255,.72);margin-top:10px;max-width:56ch}
+.cta-band .btns{display:flex;gap:10px;flex-wrap:wrap}.cta-band .ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2)}
+
+/* 13. footer */
+.site-footer{background:var(--ink);color:rgba(255,255,255,.72);padding:clamp(46px,6vw,72px) 0 0;margin-top:clamp(64px,8vw,112px)}
+.foot-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:32px}
+.site-footer .brand b{color:#fff}.site-footer .brand small{color:rgba(255,255,255,.55)}
+.foot-about{font-size:14px;margin-top:14px;max-width:38ch}
+.foot-ct{display:grid;gap:4px;margin-top:14px;font-size:14px}.foot-ct a{color:#fff;text-decoration:none}
+.site-footer h4{font-size:13px;font-weight:600;color:#fff;margin-bottom:14px}
+.site-footer ul{list-style:none;display:grid;gap:9px;font-size:14px}
+.site-footer ul a{text-decoration:none}.site-footer ul a:hover{color:var(--org)}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.09);margin-top:44px;padding:22px 0;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px}
+.mobile-bar{position:fixed;left:0;right:0;bottom:0;z-index:90;display:none;gap:1px;background:var(--line);box-shadow:0 -6px 20px rgba(40,30,10,.12)}
+.mobile-bar a{flex:1;display:grid;place-items:center;min-height:54px;font-weight:700;font-size:15px;text-decoration:none;background:var(--pp)}
+.mobile-bar a.p{background:var(--grad);color:#fff}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s}.rv.on{opacity:1;transform:none}
+
+@media(max-width:1060px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.tel{display:none}}
+@media(max-width:860px){
+  .burger{display:grid}
+  .site-header{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(242,241,236,.98)}
+  .hd-r{margin-left:auto}.media-note{display:none}
+  .nav{position:fixed;top:var(--header-h);right:0;bottom:0;width:min(360px,100%);background:var(--pp);border-left:1px solid var(--line);flex-direction:column;align-items:stretch;padding:16px;gap:4px;transform:translateX(100%);transition:transform .35s;overflow-y:auto;margin:0}
+  .nav.open{transform:none;box-shadow:-20px 0 60px rgba(40,30,10,.2)}
+  .menu{position:static;width:auto;display:block;box-shadow:none;border:0;padding:0 0 8px 8px;background:none}
+  .dd > button::after{display:none}
+  .nav .m-only{display:flex;margin-top:10px}.hd-r .btn{display:none}
+  .probs,.tools,.two,.consult,.inds{grid-template-columns:minmax(0,1fr)}
+  .prods{grid-template-columns:minmax(0,1fr)}
+  .foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cta-band{grid-template-columns:minmax(0,1fr)}
+  .mobile-bar{display:flex}body{padding-bottom:54px}
+  .hero-scrim{background:linear-gradient(0deg,rgba(242,241,236,.97) 35%,rgba(242,241,236,.55) 70%,rgba(242,241,236,.2))}
+  .hero{align-items:flex-end;padding:120px 0 48px}
+}
+@media(max-width:600px){.cmp{aspect-ratio:4/3}.cmp-legend{grid-template-columns:minmax(0,1fr)}.prod{min-height:0}.prod img{height:160px}.fig{min-height:260px}.chat{height:560px}}
+@media(max-width:520px){.foot-grid{grid-template-columns:minmax(0,1fr)}.steps{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body class="lock">
+<section id="intro" aria-label="인트로">
+  <canvas id="cubes3d" aria-hidden="true"></canvas>
+  <canvas id="fx" tabindex="0" role="button" aria-label="S.E.A. 로고. 누르면 SEA 글자가 되고 메인 화면으로 들어갑니다. 드래그해서 돌릴 수 있습니다."></canvas>
+  <p class="wordmark" aria-hidden="true"><span>SEA</span></p>
+  <p class="hint" id="hint"><b>로고</b>를 눌러 들어가기</p>
+  <button type="button" class="lang intro-lang" aria-label="View in English"><b data-l="ko">KO</b><b data-l="en">EN</b></button>
+  <button class="skip" id="skip" type="button">건너뛰기</button>
+</section>
+
+<!-- 1. 헤더 (스티키) -->
+<header class="site-header" id="hdr">
+  <div class="wrap hd">
+    <a class="brand" href="#top"><svg class="mk" width="30" height="30" viewBox="0 0 20 20" aria-hidden="true"></svg><span><b>S<i>·</i>E<i>·</i>A</b><small>Wet Process Equipment</small></span></a>
+    <nav class="nav" id="nav" aria-label="주 메뉴">
+      <div class="dd"><button type="button" aria-expanded="false">제품</button>
+        <div class="menu" id="m-prod"></div></div>
+      <div class="dd"><button type="button" aria-expanded="false">사업 분야</button>
+        <div class="menu">
+          <a href="#industries"><b>태양광 습식 장비</b><span>TOPCon·PERC·HIT·탠덤 셀 공정</span></a>
+          <a href="#industries"><b>반도체 패키지 습식 장비</b><span>웨이퍼, 글라스·세라믹 패키지 기판</span></a>
+          <a href="#industries"><b>PCB · FPD(LCD)</b><span>박막 유리 기판 세정·식각·박리</span></a>
+        </div></div>
+      <a href="#process">공정</a>
+      <a href="#coverage">글로벌 거점</a>
+      <a href="#notice">공지</a>
+      <a href="https://sea-e2e.recruiter.co.kr/career/home">채용</a>
+      <a href="#" id="replay">인트로</a>
+            <a class="btn m-only" href="#consult">장비 상담 · AI</a>
+      <a class="btn ghost m-only" href="tel:+82314789106">+82-31-478-9106</a>
+    </nav>
+    <div class="hd-r">
+      <button type="button" class="lang" aria-label="View in English"><b data-l="ko">KO</b><b data-l="en">EN</b></button>
+      <a class="tel" href="tel:+82314789106">+82-31-478-9106</a>
+      <a class="btn" href="#consult" style="min-height:42px;padding:0 16px;font-size:14px">장비 상담</a>
+      <button class="burger" id="burger" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="nav"><i></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. 히어로 -->
+  <section class="hero">
+    <div class="hero-media">
+      <img src="img/lab.webp" alt="S.E.A. 습식 장비 내부 공간">
+      <!-- 히어로 영상: assets/video/hero.mp4 (+ hero.webm) 파일을 넣으면 자동 재생. 없으면 위 사진이 그대로 보임 -->
+      <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback poster="img/lab.webp" aria-hidden="true" hidden>
+        <source src="assets/video/hero.mp4" type="video/mp4"><source src="assets/video/hero.webm" type="video/webm">
+      </video>
+    </div>
+    <div class="hero-scrim"></div>
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow"><i></i>고효율 태양광 · 반도체 패키지 기판 솔루션</span>
+        <h1>다음 세대 셀을 위한 습식 공정 장비</h1>
+        <p class="sub">박막 태양전지와 유리 기판용 습식 장비, TOPCon·PERC·HIT·탠덤 셀의 습식 공정. 태양광·반도체·PCB·FPD 습식 식각 장비 25년 이상의 경험으로 만듭니다.</p>
+        <div class="btns"><a class="btn" href="#consult">장비 상담 시작하기 →</a><a class="btn ghost" href="#products">장비 보기</a></div>
+        <div class="hero-stats" id="stats"></div>
+      </div>
+    </div>
+    <span class="media-note">sea-e2e.com 사업부 이미지</span>
+  </section>
+
+  <!-- 3. 문제 -->
+  <section class="band" id="problem"><div class="wrap">
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>The problem</span><h2>수율은 습식 공정에서 갈립니다</h2>
+      <p class="sub">셀과 기판이 지나는 세정·식각·건조 단계의 작은 오염과 편차가 효율과 생산량을 깎습니다.</p></div></div>
+    <div class="probs" id="probs"></div>
+  </div></section>
+
+  <!-- 4. 배치 / 인라인 드래그 비교 -->
+  <section class="band alt" id="compare"><div class="wrap">
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>Batch / Inline</span><h2>배치와 인라인, 라인에 맞게</h2>
+      <p class="sub">가운데 손잡이를 좌우로 끌어 두 방식의 장비를 비교해 보세요.</p></div></div>
+    <div class="cmp rv" id="cmp">
+      <figure class="a"><img src="img/batch-xl.webp" alt="SEABatch XL 배치 장비"><span class="lab">Batch · SEABatch XL</span></figure>
+      <figure class="b"><img src="img/line-xl.webp" alt="SEAline XL 인라인 장비"><span class="lab">Inline · SEAline XL</span></figure>
+      <div class="handle"><span aria-hidden="true">↔</span></div>
+      <input type="range" min="0" max="100" value="50" aria-label="배치와 인라인 비교 위치">
+    </div>
+    <div class="cmp-legend">
+      <p><b>배치 · 수직</b>한 번에 최대 600장 적재, 12,000 w/h. 텍스처링·산화·SC1/SC2/O3 세정.</p>
+      <p><b>인라인</b>기판이 흐르며 HF·RCA·O3 세정, 현상·식각·박리, Electrical deposition. 양면 설계 모델(SEAline_WAR).</p>
+    </div>
+  </div></section>
+
+  <!-- 5. 공정 -->
+  <section class="band" id="process"><div class="wrap">
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>The solution</span><h2>텍스처링부터 건조까지, 8단계</h2>
+      <p class="sub">S.E.A. 장비가 다루는 습식 공정입니다. 실제 순서와 조합은 셀·기판과 라인 구성에 따라 달라집니다.</p></div></div>
+    <div class="steps" id="steps"></div>
+  </div></section>
+
+  <!-- 6. 제품 -->
+  <section class="band alt" id="products"><div class="wrap">
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>Equipment</span><h2>장비</h2><p class="sub">카드를 누르면 전체 사양이 열립니다.</p></div>
+      <div class="filters" id="filters" role="tablist" aria-label="분야"></div></div>
+    <div class="prods" id="prods"></div>
+    <p class="note">메인 페이지 표기 모델: SEABatch XL 600(배치), SEAline_WAR(인라인·양면 설계). 출처: sea-e2e.com 사업부 페이지</p>
+  </div></section>
+
+  <!-- 7·8. 장비 찾기 + 처리량 계산 -->
+  <section class="band" id="tools"><div class="wrap">
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>Self-check · Planner</span><h2>우리 라인에 맞는 장비는</h2></div></div>
+    <div class="tools">
+      <div class="tool rv">
+        <h3>장비 찾기</h3><p>기판과 방식을 고르면 맞는 장비를 보여 드립니다.</p>
+        <div class="q"><b>기판</b><div class="opts" data-k="sub"></div></div>
+        <div class="q"><b>선호 방식</b><div class="opts" data-k="way"></div></div>
+        <div class="result" id="pick" aria-live="polite"></div>
+      </div>
+      <div class="tool rv">
+        <h3>처리량 계산</h3><p>목표 처리량에 SEABatch XL 몇 대가 필요한지 대략 계산합니다.</p>
+        <div class="field"><label for="tgt">목표 처리량 <output id="tgtO"></output></label><input type="range" id="tgt" min="6000" max="120000" step="2000" value="48000"></div>
+        <div class="field"><label for="util">가동률 <output id="utilO"></output></label><input type="range" id="util" min="60" max="100" step="5" value="85"></div>
+        <div class="result"><small>필요 대수 (12,000 w/h 기준)</small><div class="big" id="need">5</div><div class="units" id="units"></div><p id="needP"></p></div>
+      </div>
+    </div>
+    <p class="note">계산기는 홈페이지에 공개된 최대 처리량(12,000 w/h)만으로 나눈 대략값입니다. 실제 구성은 영업 상담으로 확인하세요.</p>
+  </div></section>
+
+  <!-- 9. 분야 · 거점 -->
+  <section class="band alt" id="industries"><div class="wrap">
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>Industries · Coverage</span><h2>세 분야, 7개국</h2></div>
+      <p class="legend"><span><i class="lg f"></i>제조 공장 + 글로벌 서비스</span><span><i class="lg s"></i>글로벌 서비스</span></p></div>
+    <div class="inds" id="inds"></div>
+    <div id="coverage" class="netbox rv"><div class="fig"><svg id="map" role="img" aria-label="거점 7개국 위치"></svg></div></div>
+    <div class="sites" id="sites"></div>
+    <p class="note">본사 · 경상북도 구미시 4공단로 7길 23-27. 지도는 나라 위치만 나타냅니다.</p>
+    <div class="en-only" hidden><h3 style="margin-top:32px">Certificate</h3><div class="certs"><span>ISO 9001</span><span>ISO 14001</span></div></div>
+    <figure class="award rv"><img src="img/award.webp" alt="말레이시아 수상 기념 단체 사진" loading="lazy">
+      <div><span class="eyebrow" style="color:#fff"><i></i>Award</span><h2 style="margin-top:10px">2022 Malaysia 5 Year Award</h2><p>말레이시아 제조·서비스 거점과 함께한 5년.</p></div></figure>
+  </div></section>
+
+  <!-- 10. FAQ + 공지 -->
+  <section class="band" id="faq"><div class="wrap two">
+    <div class="rv"><span class="eyebrow"><i></i>FAQ</span><h2 style="margin:10px 0 18px">자주 묻는 질문</h2><div class="faq" id="faqs"></div></div>
+    <div class="rv" id="notice"><div class="en-only" hidden><span class="eyebrow"><i></i>Job · Talent</span><h2 style="margin:10px 0 6px">Talent</h2><p class="sub">We are looking for passionate and competent candidates with the skills below.</p>
+      <div class="talent"><div><h3>Creative Challenge</h3><p>Being creative and challenging is necessary to deal with the various issues posed by the customer side.</p></div><div><h3>Execution</h3><p>Execution based on technological understanding and professionalism.</p></div><div><h3>Communication</h3><p>Producing equipment is a complete set of co-working procedures, so the ability to cooperate is essential. Cooperation comes from clear communication.</p></div></div><div style="height:36px"></div></div>
+      <span class="eyebrow"><i></i>Notice</span><h2 style="margin:10px 0 18px">공지</h2><div class="notices" id="notices"></div></div>
+  </div></section>
+
+  <!-- 11. AI 상담 -->
+  <section class="band alt" id="consult"><div class="wrap consult">
+    <div class="rv">
+      <span class="eyebrow"><i></i>상담</span><h2 style="margin-top:10px">장비 상담</h2>
+      <p class="sub" style="margin-top:12px">사양·공정·서비스를 AI에게 먼저 물어보고, 견적과 일정은 영업팀과 이야기하세요.</p>
+      <dl class="ctc" id="ctc" style="margin-top:20px"></dl>
+    </div>
+    <div class="chat rv" id="chat" aria-label="AI 상담">
+      <div class="chat-h"><svg class="mk" width="22" height="22" viewBox="0 0 20 20" aria-hidden="true"></svg><b>S·E·A AI 상담</b><small id="st">연결 중</small></div>
+      <div class="log" id="log" aria-live="polite"><div class="msg a">안녕하세요. 장비 사양, 공정, 거점, 문의처를 물어보세요. 홈페이지에 공개된 정보로 답합니다.</div></div>
+      <div class="chips" id="chips"></div>
+      <form id="f"><textarea id="q" placeholder="메시지를 입력하세요" aria-label="메시지" rows="1"></textarea><button class="send" id="send" disabled>보내기</button></form>
+    </div>
+  </div></section>
+
+  <!-- 12. CTA -->
+  <section class="wrap" style="margin-top:clamp(64px,8vw,112px)"><div class="cta-band rv">
+    <div><h2>라인에 맞는 습식 장비, 상담부터 시작하세요</h2><p>배치·인라인, 태양광·반도체·글라스. 공정 조건을 알려 주시면 맞는 장비 구성을 제안합니다.</p></div>
+    <div class="btns"><a class="btn" href="#consult">장비 상담</a><a class="btn ghost" href="mailto:info@sea-e2e.com">info@sea-e2e.com</a></div>
+  </div></section>
+</main>
+
+<!-- 13. 푸터 -->
+<footer class="site-footer"><div class="wrap">
+  <div class="foot-grid">
+    <div><a class="brand" href="#top"><svg class="mk" width="28" height="28" viewBox="0 0 20 20" aria-hidden="true"></svg><span><b>S<i>·</i>E<i>·</i>A</b><small>(주)에스이에이 · S.E.A. Group</small></span></a>
+      <p class="foot-about">고효율 태양광·반도체 패키지 기판을 위한 습식 장비. 2010년 설립, 임직원 200명 이상.</p>
+      <div class="foot-ct"><a href="tel:+82314789106">T +82-31-478-9106</a><a href="tel:+82314789109">영업 +82-31-478-9109</a><span>F +82-31-478-9107</span><a href="mailto:info@sea-e2e.com">info@sea-e2e.com</a><span>경상북도 구미시 4공단로 7길 23-27</span></div></div>
+    <div><h4>제품</h4><ul id="f-prod"></ul></div>
+    <div><h4>사업 분야</h4><ul><li><a href="#industries">태양광 습식 장비</a></li><li><a href="#industries">반도체 패키지 습식 장비</a></li><li><a href="#industries">PCB · FPD(LCD)</a></li><li><a href="#process">습식 공정</a></li></ul></div>
+    <div><h4>회사</h4><ul><li><a href="https://www.sea-e2e.com/about-us">회사 소개</a></li><li><a href="#coverage">글로벌 거점</a></li><li><a href="#notice">공지</a></li><li><a href="https://sea-e2e.recruiter.co.kr/career/home">채용</a></li><li><a href="https://www.linkedin.com/company/s-e-a-group/">LinkedIn</a></li><li><a href="https://youtube.com/@seagroup1602">YouTube</a></li></ul></div>
+  </div>
+  <div class="foot-bottom"><span>© <span data-year></span> S.E.A. Group. 내용 출처: sea-e2e.com (2026-11-24 확인)</span><span>Korea · Malaysia · Germany · India · Vietnam · Singapore · USA</span></div>
+</div></footer>
+<nav class="mobile-bar" aria-label="빠른 연락"><a href="tel:+82314789106">전화</a><a class="p" href="#consult">장비 상담</a></nav>
+<dialog id="dlg"><div class="dlg" id="dlgc"></div></dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+{
+const COLS=[['#f46340','#fc682c','#f9811a','#fc8609'],['#e74d4f','#ed6041','#f07334','#f28218'],['#ef3a4d','#ef4f48','#ef5f42','#f2722d'],['#df1946','#eb3b5b','#e44c4a','#f56641']];
+const POS=[0,5,11,16];
+const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const markSvg=COLS.map((r,y)=>r.map((c,x)=>`<rect x="${POS[x]}" y="${POS[y]}" width="4" height="4" rx=".7" fill="${c}"/>`).join('')).join('');
+document.querySelectorAll('.mk').forEach(s=>s.innerHTML=markSvg);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t;
+
+// ---------- 데이터 (sea-e2e.com) ----------
+let PRODS=[
+ {n:'SEABatch XL',f:'태양광',type:'Batch · 수직',img:'batch-xl',d:'n-type 고효율 태양전지에 맞춘 배치 장비. 같은 방식의 수직 배치 장비 가운데 최대 생산량.',k:['600장 적재','12,000 w/h','M12 210 mm','±2% 도징'],
+  s:[['공정','Alkaline/Acidic 텍스처링, 산화, pSC1·SC2·O3 세정'],['적용 셀','TOPCon, PERC, HIT'],['처리량','최대 600장 적재, 12,000 w/h'],['기판','최대 M12 (210×210 mm)'],['특징','도징 정확도 ±2%, 금속 오염 제로, 완전 건조']]},
+ {n:'SEAline XL',f:'태양광',type:'Inline',img:'line-xl',d:'n-type 인라인 시스템에 맞춘 장비. 메인 페이지에서는 양면 설계 모델 SEAline_WAR로 소개.',k:['HF·RCA·O3','Electrical deposition','M12 210 mm','파티클 제로'],
+  s:[['공정','HF·금속 세정, RCA·O3 세정, 현상·식각·박리, Electrical deposition'],['세정 방식','롤러·디스크 브러시, 버블젯, 초음파·플라즈마'],['기판','최대 M12 (210×210 mm)'],['특징','파티클 제로 설계, 완전 건조']]},
+ {n:'SEAline Glass Cleaner',f:'Glass',type:'Inline',img:'glass',d:'태양광 박막(Thin film) 유리에 맞춘 세정 시스템.',k:['Generation 7','RCA·O3','분진 제로'],
+  s:[['공정','RCA·O3 세정, 현상·식각·박리'],['세정 방식','롤러·디스크 브러시, 버블젯, 초음파·플라즈마'],['기판','Generation 7'],['특징','분진·파티클 제로 설계, 완전 건조']]},
+ {n:'SEAbatch SEMI',f:'반도체',type:'Batch · 수직',img:'semi',d:'수직 배치 장비 가운데 최대 생산량을 내세운 반도체용 장비.',k:['300 mm 웨이퍼','500×500 mm 글라스','±2 ml 도징','파티클 30개 미만'],
+  s:[['공정','RCA·SPM·HF·O3·DIO3 세정, 현상·식각·박리, 산화, 특수 건조'],['기판','실리콘 웨이퍼 최대 300 mm, 글라스·세라믹 최대 500×500 mm'],['도징 정확도','±2 ml'],['파티클','RCA 세정 30개 미만, 건조 30개 미만'],['특징','금속 오염 제로, 완전 건조']]}];
+let SITES=[['대한민국','본사 · 경북 구미',1,127,36.1],['말레이시아','제조 · 서비스',1,101.7,3.1],['독일','서비스',0,10.4,51.2],['인도','서비스',0,78.9,21],['베트남','서비스',0,106,16],['싱가포르','서비스',0,103.8,1.35],['미국','서비스',0,-84.4,33.8]];
+let NOTI=[['신주배정(무상증자) 통지서','2026-11 초','주주에게 신주 배정 내역을 알리고 확인을 요청'],['임시주주총회 소집통지서','2026-11 초','상법과 정관에 따른 임시주주총회 개최 안내'],
+ ['임시주주총회 기준일 설정 공고','2026-07-31','권리주주 확정 기준일 2026-08-18'],['신주배정기준일 공고','2026-07-31','신주 배정 기준일 2026-08-19'],
+ ['신주발행 공고','2026-07-31','준비금 일부 자본전입 — 기명식 보통주 5,834,550주, 1주당 100원, 배정 기준일 2026-08-19'],['신주배정(무상증자) 통지서','2026-05-19','신주 배정 내역 통지'],
+ ['신주배정기준일 공고','2026-04-27','신주 배정 기준일 2026-05-12, 대표이사 신재호'],['신주발행 공고','2026-04-27','기명식 보통주 9,724,250주, 1주당 100원 — 기준일 주주에게 1주당 5주 배정, 단주 없음'],['임시주주총회 소집통지서','2026-04-23','상법과 정관 제27조에 따른 임시주주총회 소집']];
+let CTC=[['주소','경상북도 구미시 4공단로 7길 23-27'],['대표','+82-31-478-9106'],['영업','+82-31-478-9109'],['팩스','+82-31-478-9107'],['이메일','info@sea-e2e.com']];
+let STATS=[[2010,'','설립',0],[200,'+','임직원',1],[498,'억 원','매출 (2022)',1],[25,'년+','습식 식각 경험',1]];
+let PROBS=[['01','오염','금속 성분과 파티클은 셀 효율을 바로 떨어뜨립니다.','S.E.A. 장비는 <em>금속 오염 제로·파티클 제로</em> 설계를 기본으로 합니다.'],
+ ['02','편차','약액 농도가 흔들리면 텍스처와 식각 결과가 장마다 달라집니다.','SEABatch XL의 <em>도징 정확도 ±2%</em>, SEAbatch SEMI는 <em>±2 ml</em>.'],
+ ['03','생산량','장비 대수와 설치 면적은 그대로 투자비가 됩니다.','같은 방식 수직 배치 장비 중 <em>최대 생산량</em> — 한 번에 600장, 12,000 w/h.']];
+let STEPS=[['텍스처링','Alkaline·Acidic 텍스처링으로 빛을 가두는 표면'],['산화','Oxidation 공정'],['SC1 · SC2 세정','pSC1·SC2 세정'],['O3 · DIO3 세정','오존·오존수 세정'],
+ ['HF · 금속 세정','HF와 금속 세정, RCA 세정'],['현상 · 식각 · 박리','Developing · Etching · Stripping'],['Electrical deposition','인라인 장비의 전기 증착 공정'],['건조','완전 건조 · 특수 건조, 파티클 30개 미만']];
+let INDS=[['태양광','n-type 고효율 셀(TOPCon·PERC·HIT·탠덤)의 텍스처링·산화·세정, 인라인 세정·식각.'],['반도체 패키지','실리콘 웨이퍼 최대 300 mm, 글라스·세라믹 기판 최대 500×500 mm 세정·식각·건조.'],['PCB · FPD(LCD)','박막 유리(Generation 7) 기판의 RCA·O3 세정과 현상·식각·박리.']];
+let FAQS=[['어떤 셀 공정을 지원하나요?','TOPCon, PERC, HIT 셀의 습식 공정을 지원하고, 탠덤 셀 공정 경험도 소개되어 있습니다. SEABatch XL은 n-type 고효율 셀에 맞춘 배치 장비입니다.'],
+ ['기판 크기는 어디까지 되나요?','태양광 장비(SEABatch XL, SEAline XL)는 최대 M12(210×210 mm), SEAline Glass Cleaner는 Generation 7, SEAbatch SEMI는 웨이퍼 300 mm·글라스/세라믹 500×500 mm까지입니다.'],
+ ['배치와 인라인은 어떻게 다른가요?','배치는 수직으로 한 번에 여러 장(SEABatch XL 최대 600장)을 담가 처리하고, 인라인은 기판이 라인을 따라 흐르며 세정·식각 등을 연속으로 거칩니다. 라인 구성과 공정에 따라 고릅니다.'],
+ ['장비를 맞춤 제작할 수 있나요?','홈페이지 소개에 따르면 SEABatch XL 600은 용도와 공정에 맞게 맞춤 제작할 수 있습니다. 조건은 영업팀(+82-31-478-9109)과 상의하세요.'],
+ ['해외 설치·서비스가 되나요?','한국·말레이시아 제조 공장과 함께 독일·인도·베트남·싱가포르·미국에 글로벌 서비스 거점이 있습니다.'],
+ ['견적은 어떻게 받나요?','가격과 납기는 공개되어 있지 않습니다. info@sea-e2e.com 또는 영업 +82-31-478-9109로 문의하세요.']];
+
+
+// ---------- English (eng.sea-e2e.com) ----------
+const EN={
+ PRODS:[
+  {n:'SEABatch XL',f:'Photovoltaic',type:'Batch · Vertical',img:'batch-xl',d:'Optimized system for high-efficiency solar cells (n-type). Ultra-capacity batch equipment with the highest cost performance.',k:['600 wafers load','12,000 w/h','M12 210 mm','±2% dosing'],
+   s:[['Process','Alkaline / Acidic texturing, Oxidation, pSC1 / SC2 / O3 cleaning'],['Cells','TOPCon, PERC, HIT'],['Throughput','600 wafers load, up to 12,000 w/h'],['Wafer size','Up to M12 (210 × 210 mm)'],['Features','Dosing accuracy ±2%, non-metal components, perfect drying']]},
+  {n:'SEAline XL',f:'Photovoltaic',type:'Inline',img:'line-xl',d:'n-type inline application with a wide range of inline processes.',k:['HF · RCA · O3','Electrical deposition','M12 210 mm','Particle free'],
+   s:[['Process','HF / Metal cleaning, RCA & O3 cleaning, Developing / Etching / Stripping, Electrical deposition'],['Cleaning','Roller brush / Disc brush, Bubble jet, Ultrasonic / Plasma'],['Wafer size','Up to M12 (210 × 210 mm)'],['Features','Particle-free design, perfect drying']]},
+  {n:'SEAline Glass Cleaner',f:'Glass',type:'Inline',img:'glass',d:'Inline cleaning for thin-film and FPD glass, aiming at zero particles.',k:['Generation 7','RCA · O3','Zero particle'],
+   s:[['Process','RCA & O3 cleaning, Developing / Etching / Stripping'],['Cleaning','Roller brush / Disc brush, Bubble jet, Ultrasonic / Plasma'],['Glass size','Generation 7'],['Features','Zero-particle design, perfect drying']]},
+  {n:'SEAbatch SEMI',f:'Semiconductor',type:'Batch · Vertical',img:'semi',d:'Batch equipment for semiconductor substrates with the highest cost performance.',k:['Si wafer 300 mm','Glass 500×500 mm','±2 ml dosing','< 30 particles'],
+   s:[['Process','RCA / SPM / HF / O3 / DIO3 cleaning, Developing / Etching / Stripping, Oxidation / Special drying'],['Substrates','Si wafer up to 300 mm, Glass / Ceramics up to 500 × 500 mm'],['Dosing accuracy','±2 ml'],['Particles','RCA cleaning < 30 EA, Dry < 30 EA'],['Features','Non-metal components, perfect drying']]}],
+ SITES:[['Korea','HQ · R&D Gumi · Mfg Jeungpyeong · Sales Anyang',1,127,36.1],['Malaysia','Manufacturing · Penang',1,101.7,3.1],['Germany','Eschborn · PM, engineering, parts',0,10.4,51.2],['India','Chennai · Customer service',0,78.9,21],['Vietnam','Ho Chi Minh City',0,106,16],['Singapore','Singapore',0,103.8,1.35],['USA','Perrysburg OH · Alpharetta GA (warehouse)',0,-84.4,33.8]],
+ NOTI:[],
+ CTC:[['Address','23-27, 4gongdan-ro 7-gil, Gumi-si, Gyeongsangbuk-do, Republic of Korea'],['Tel','+82-31-478-9106'],['Sales','+82-31-478-9109'],['Fax','+82-31-478-9107'],['E-mail','info@sea-e2e.com']],
+ STATS:[[2010,'','Founded',0],[350,'','Units per year (2 plants)',1],[7,'','Countries',1],[10,'yrs+','Global No.1 in PV wet process',1]],
+ PROBS:[['01','Wet Equipment Leader','Our state-of-the-art technology aims to meet the new trend in the semiconductor packaging industry.',''],
+  ['02','Wet Process Professional','We offer the best wet process solution for photovoltaic equipment, keeping our position as the global No.1 player for more than 10 years.',''],
+  ['03','Happy S.E.A.','Seeking a \'Happy S.E.A.\' that satisfies our customers and all employees.','']],
+ STEPS:[['Texturing','Alkaline · Acidic texturing'],['Oxidation','Oxidation process'],['SC1 · SC2 cleaning','pSC1 · SC2 cleaning'],['O3 · DIO3 cleaning','Ozone and ozonated-water cleaning'],
+  ['HF · Metal cleaning','HF / metal cleaning, RCA cleaning'],['Develop · Etch · Strip','Developing · Etching · Stripping'],['Electrical deposition','Inline electrical deposition'],['Drying','Perfect drying · special drying, < 30 particles']],
+ INDS:[['Photovoltaic','Si wafers for high-efficiency n-type cells (TOPCon · PERC · HIT): texturing, oxidation, cleaning and inline etching.'],['Semiconductor packaging','Si wafers up to 300 mm and glass / ceramic substrates up to 500 × 500 mm.'],['Thin film · FPD glass','Generation 7 glass: RCA · O3 cleaning and developing / etching / stripping.']],
+ FAQS:[['Which cell processes do you support?','Wet processes for TOPCon, PERC and HIT cells. SEABatch XL is optimized for high-efficiency n-type cells.'],
+  ['What substrate sizes are supported?','PV equipment handles up to M12 (210 × 210 mm), SEAline Glass Cleaner up to Generation 7, and SEAbatch SEMI Si wafers up to 300 mm and glass / ceramics up to 500 × 500 mm.'],
+  ['Batch or inline?','Batch tools process many wafers vertically at once (SEABatch XL loads 600). Inline tools clean and etch substrates continuously as they move along the line.'],
+  ['Where do you manufacture?','Two production facilities, in Korea and Malaysia, producing 350 units per year, with an R&D center in Gumi.'],
+  ['Do you support global sites?','Yes. Service bases in Germany, India, Vietnam, Singapore and the USA (Perrysburg OH, Alpharetta GA).'],
+  ['How do I get a quote?','Prices and lead times are not published. Contact info@sea-e2e.com or sales +82-31-478-9109.']]
+};
+const KO={PRODS,SITES,NOTI,CTC,STATS,PROBS,STEPS,INDS,FAQS};
+let LANG='ko';const tr=(k,e)=>LANG==='en'?e:k;
+
+// ---------- 렌더 ----------
+const renderStatic=()=>{
+document.getElementById('stats').innerHTML=STATS.map(([v,u,l,c])=>`<p><b><span class="cnt" data-v="${v}" data-c="${c}">${c&&!document.body.classList.contains('in')?0:v}</span><small style="font-size:.55em;margin-left:2px">${u}</small></b><span>${l}</span></p>`).join('');
+document.getElementById('probs').innerHTML=PROBS.map(([n,t,p,s])=>`<article class="prob rv"><div class="ic">${n}</div><h3>${t}</h3><p>${p}</p>${s?`<p>${s}</p>`:''}</article>`).join('');
+document.getElementById('steps').innerHTML=STEPS.map(([t,d])=>`<div class="step rv"><h3>${t}</h3><p>${d}</p></div>`).join('');
+document.getElementById('inds').innerHTML=INDS.map(([t,d])=>`<div class="ind rv"><h3>${t}</h3><p>${d}</p></div>`).join('');
+document.getElementById('faqs').innerHTML=FAQS.map(([q,a])=>`<details><summary>${q}</summary><p>${a}</p></details>`).join('');
+document.getElementById('notices').innerHTML=NOTI.map(([t,d,s])=>`<details><summary><span>${t}</span><time>${d}</time></summary><p>${s}</p></details>`).join('')+(LANG==='en'?'<p class="sub">The notice board on the English site does not load. Notices are published on the <a href="https://www.sea-e2e.com/groups">Korean site</a>.</p>':'<p class="note">"19일 전·20일 전"으로만 표시된 두 건은 11월 초로 적었습니다. <a href="https://www.sea-e2e.com/groups">원문 공지</a></p>');
+document.getElementById('m-prod').innerHTML=PRODS.map((p,i)=>`<a href="#products" data-open="${i}"><b>${p.n}</b><span>${p.f} · ${p.type}</span></a>`).join('');
+document.getElementById('f-prod').innerHTML=PRODS.map((p,i)=>`<li><a href="#products" data-open="${i}">${p.n}</a></li>`).join('');
+};
+document.querySelector('[data-year]').textContent=new Date().getFullYear();
+// 제품 카드 + 상세
+let FILT=['전체','태양광','Glass','반도체'],curF=FILT[0];
+const fEl=document.getElementById('filters'),pEl=document.getElementById('prods');
+const drawProds=()=>{fEl.innerHTML=FILT.map(f=>`<button type="button" role="tab" aria-selected="${f===curF}" data-f="${f}">${f}</button>`).join('');
+  pEl.innerHTML=PRODS.map((p,i)=>({p,i})).filter(({p})=>curF===FILT[0]||p.f===curF).map(({p,i})=>`<article class="prod" tabindex="0" data-i="${i}" aria-label="${esc(p.n)} ${tr('자세히','details')}">
+    <span class="tag"><i></i>${p.f} · ${p.type}</span><span class="more" aria-hidden="true">+</span>
+    <img src="img/${p.img}.webp" alt="${esc(p.n)}" loading="lazy"><h3>${p.n}</h3><p>${p.d}</p><div class="keys">${p.k.map(x=>`<span>${x}</span>`).join('')}</div></article>`).join('');};
+fEl.addEventListener('click',e=>{const b=e.target.closest('button');if(b){curF=b.dataset.f;drawProds();}});
+const dlg=document.getElementById('dlg'),dlgc=document.getElementById('dlgc');
+const openP=i=>{const p=PRODS[i];dlgc.innerHTML=`<div class="row"><span class="eyebrow"><i></i>${p.f} · ${p.type}</span><button class="x" type="button" data-close aria-label="${tr('닫기','Close')}">×</button></div>
+  <img src="img/${p.img}.webp" alt="${esc(p.n)}"><h2>${p.n}</h2><p class="sub">${p.d}</p><dl>${p.s.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+  <div class="row"><span class="note" style="margin:0">${tr('출처: sea-e2e.com 사업부 페이지','Source: eng.sea-e2e.com Business unit')}</span><button class="btn" type="button" data-ask="${esc(tr(p.n+'의 공정과 사양을 자세히 설명해줘','Explain the process and specs of '+p.n))}">${tr('AI에게 물어보기','Ask AI')}</button></div>`;
+  if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');};
+pEl.addEventListener('click',e=>{const c=e.target.closest('.prod');if(c)openP(+c.dataset.i);});
+pEl.addEventListener('keydown',e=>{const c=e.target.closest('.prod');if(c&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openP(+c.dataset.i);}});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-open]');if(a){e.preventDefault();closeNav();openP(+a.dataset.open);}});
+dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('[data-close]'))dlg.close();const a=e.target.closest('[data-ask]');
+  if(a){dlg.close();document.getElementById('consult').scrollIntoView({behavior:'smooth'});qEl.value=a.dataset.ask;setTimeout(()=>ask(),600);}});
+// 배치/인라인 드래그 비교
+const cmp=document.getElementById('cmp'),cmpIn=cmp.querySelector('input');
+cmpIn.addEventListener('input',()=>cmp.style.setProperty('--x',cmpIn.value+'%'));
+// 장비 찾기
+const QK={sub:['태양광 셀(웨이퍼)','박막 유리','반도체 웨이퍼','글라스·세라믹 패키지'],way:['배치','인라인','상관없음']},QE={sub:['PV cell (wafer)','Thin-film glass','Semiconductor wafer','Glass · ceramic package'],way:['Batch','Inline','Either']},sel={sub:0,way:2};
+const drawOpts=()=>document.querySelectorAll('.opts').forEach(o=>{const k=o.dataset.k,Q=LANG==='en'?QE:QK;o.innerHTML=Q[k].map((x,i)=>`<button type="button" data-i="${i}" aria-pressed="${sel[k]===i}">${x}</button>`).join('');});
+document.querySelectorAll('.opts').forEach(o=>{const k=o.dataset.k;
+  o.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;sel[k]=+b.dataset.i;o.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));pick();});});
+const pick=()=>{const s=sel.sub,w=sel.way;let r;
+  if(s===0)r=w===1?[1,tr('인라인 세정·식각, Electrical deposition까지 한 라인에서. 양면 설계 모델 SEAline_WAR.','Inline cleaning, etching and electrical deposition on one line.')]:w===0?[0,tr('텍스처링·산화·세정을 600장 단위로. 12,000 w/h, M12까지.','Texturing, oxidation and cleaning, 600 wafers per load. Up to 12,000 w/h and M12.')]:[0,tr('대량 텍스처링·세정은 배치(SEABatch XL), 연속 세정·식각은 인라인(SEAline XL)을 함께 검토하세요.','Consider batch (SEABatch XL) for high-volume texturing and inline (SEAline XL) for continuous cleaning and etching.')];
+  else if(s===1)r=[2,tr('박막 유리(Generation 7) 기판 세정·식각·박리. 분진·파티클 제로 설계.','Thin-film glass up to Generation 7: cleaning, etching and stripping with a zero-particle design.')];
+  else r=[3,tr('웨이퍼 300 mm, 글라스·세라믹 500×500 mm까지. RCA·SPM·HF·O3·DIO3 세정과 특수 건조.','Si wafers up to 300 mm, glass / ceramics up to 500 × 500 mm. RCA · SPM · HF · O3 · DIO3 cleaning and special drying.')];
+  const p=PRODS[r[0]],warn=(s>=1&&w!==2&&((s===1&&w===0)||(s>=2&&w===1)))?tr(' 이 기판에서 홈페이지에 소개된 방식은 '+p.type+'입니다.',' For this substrate the website lists '+p.type+'.'):'';
+  document.getElementById('pick').innerHTML=`<small>${tr('추천 장비','Recommended')}</small><b>${p.n}</b><p>${r[1]}${warn}</p><p><a href="#products" data-open="${r[0]}">${tr('사양 보기 →','View specs →')}</a></p>`;};
+// 처리량 계산
+const tgt=document.getElementById('tgt'),util=document.getElementById('util');
+const calc=()=>{const T=+tgt.value,U=+util.value,n=Math.ceil(T/(12000*U/100));
+  document.getElementById('tgtO').textContent=T.toLocaleString()+' w/h';document.getElementById('utilO').textContent=U+'%';
+  document.getElementById('need').textContent=n+tr('대',' units');document.getElementById('units').innerHTML='<i></i>'.repeat(Math.min(n,24));
+  const e1=Math.round(12000*U/100);document.getElementById('needP').textContent=tr(`대당 실효 ${e1.toLocaleString()} w/h × ${n}대 = ${(e1*n).toLocaleString()} w/h`,`Effective ${e1.toLocaleString()} w/h per unit × ${n} = ${(e1*n).toLocaleString()} w/h`);};
+tgt.addEventListener('input',calc);util.addEventListener('input',calc);
+// 거점 지도
+const map=document.getElementById('map');
+const drawMap=()=>{const W=map.clientWidth,H=map.clientHeight;if(!W)return;
+  const px=lo=>(lo+120)/(160+120)*W*.9+W*.05,py=la=>(60-la)/(60+6)*H*.8+H*.1,g=W<520?14:18;let d='';
+  for(let y=g/2;y<H;y+=g)for(let x=g/2;x<W;x+=g)d+=`<circle cx="${x}" cy="${y}" r="1"/>`;
+  const kr=[px(127),py(36.1)];
+  const arcs=SITES.slice(1).map(([,,,lo,la])=>{const x=px(lo),y=py(la);return `<path d="M${kr[0]} ${kr[1]} Q ${(kr[0]+x)/2} ${Math.min(kr[1],y)-H*.28} ${x} ${y}" fill="none" stroke="url(#gl)" stroke-width="1.3" stroke-dasharray="3 6" opacity=".8"><animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2s" repeatCount="indefinite"/></path>`;}).join('');
+  const pins=SITES.map(([n,,f,lo,la],i)=>{const x=px(lo),y=py(la),c=f?'#ff007d':'#fc8609',dy=i===5?20:i===1?-8:4;
+    return `<circle cx="${x}" cy="${y}" r="8" fill="${c}" opacity=".2"><animate attributeName="r" values="6;20;6" dur="3s" begin="${i*.4}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".35;0;.35" dur="3s" begin="${i*.4}s" repeatCount="indefinite"/></circle><circle cx="${x}" cy="${y}" r="${f?5.5:4}" fill="${c}"/>${W<520&&!f?'':`<text x="${x+12}" y="${y+dy}">${n}</text>`}`;}).join('');
+  map.innerHTML=`<defs><linearGradient id="gl"><stop offset="0" stop-color="#ff007d"/><stop offset="1" stop-color="#fc8609"/></linearGradient></defs><g class="grid">${d}</g>${arcs}${pins}`;};
+const mapRO=new ResizeObserver(drawMap);mapRO.observe(map);
+// 연락처 복사
+const ctc=document.getElementById('ctc');
+const drawCtc=()=>{ctc.innerHTML=CTC.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd><button type="button" class="cp" data-v="${esc(v)}">${tr('복사','Copy')}</button></div>`).join('');};
+ctc.addEventListener('click',async e=>{const b=e.target.closest('.cp');if(!b)return;try{await navigator.clipboard.writeText(b.dataset.v);b.textContent=tr('복사됨','Copied');}catch{b.textContent=tr('복사 안 됨','Not copied');}setTimeout(()=>b.textContent=tr('복사','Copy'),1500);});
+// 헤더: 스크롤 그림자, 드롭다운, 모바일 패널
+const hdr=document.getElementById('hdr'),nav=document.getElementById('nav'),burger=document.getElementById('burger');
+addEventListener('scroll',()=>hdr.classList.toggle('is-stuck',scrollY>8),{passive:true});
+document.querySelectorAll('.dd > button').forEach(b=>b.addEventListener('click',()=>{const d=b.parentElement,o=!d.classList.contains('open');
+  document.querySelectorAll('.dd').forEach(x=>{x.classList.remove('open');x.firstElementChild.setAttribute('aria-expanded','false');});if(o){d.classList.add('open');b.setAttribute('aria-expanded','true');}}));
+document.addEventListener('click',e=>{if(!e.target.closest('.dd'))document.querySelectorAll('.dd').forEach(x=>x.classList.remove('open'));});
+const closeNav=()=>{nav.classList.remove('open');burger.setAttribute('aria-expanded','false');};
+burger.addEventListener('click',()=>{const o=nav.classList.toggle('open');burger.setAttribute('aria-expanded',o);});
+nav.addEventListener('click',e=>{if(e.target.closest('a'))closeNav();});
+
+// ---------- 한/영 전환 (원본처럼 버튼을 누르면 사이트 전체가 바뀜) ----------
+const DICT={'로고':'Logo','를 눌러 들어가기':' — tap to enter','건너뛰기':'Skip','제품':'Products','사업 분야':'Business','태양광 습식 장비':'Photovoltaic wet equipment',
+ 'TOPCon·PERC·HIT·탠덤 셀 공정':'TOPCon · PERC · HIT cell processes','반도체 패키지 습식 장비':'Semiconductor packaging wet equipment','웨이퍼, 글라스·세라믹 패키지 기판':'Wafers, glass · ceramic package substrates',
+ '박막 유리 기판 세정·식각·박리':'Thin-film glass cleaning · etching · stripping','공정':'Process','글로벌 거점':'Global operation','공지':'Notice','채용':'Job','인트로':'Intro',
+ '장비 상담 · AI':'Contact · AI','장비 상담':'Contact','고효율 태양광 · 반도체 패키지 기판 솔루션':'PV Si wafer · Thin film · Glass · Semiconductor packaging',
+ '다음 세대 셀을 위한 습식 공정 장비':'Industrial wet equipment for every substrate',
+ '박막 태양전지와 유리 기판용 습식 장비, TOPCon·PERC·HIT·탠덤 셀의 습식 공정. 태양광·반도체·PCB·FPD 습식 식각 장비 25년 이상의 경험으로 만듭니다.':'We offer industrial wet equipment and process solutions for various substrates, operating 2 production facilities in Korea and Malaysia that produce 350 units per year, and strengthening our R&D center to lead advanced technology.',
+ '장비 상담 시작하기 →':'Contact us →','장비 보기':'View equipment','sea-e2e.com 사업부 이미지':'Image: sea-e2e.com',
+ 'The problem':'Vision & Mission','수율은 습식 공정에서 갈립니다':'Wet equipment leader, wet process professional',
+ '셀과 기판이 지나는 세정·식각·건조 단계의 작은 오염과 편차가 효율과 생산량을 깎습니다.':'We keep trying our best to satisfy customers’ needs and to keep our employees happy.',
+ '배치와 인라인, 라인에 맞게':'Batch or inline, fitted to your line','가운데 손잡이를 좌우로 끌어 두 방식의 장비를 비교해 보세요.':'Drag the handle to compare the two equipment types.',
+ '배치 · 수직':'Batch · Vertical','한 번에 최대 600장 적재, 12,000 w/h. 텍스처링·산화·SC1/SC2/O3 세정.':'600 wafers per load, up to 12,000 w/h. Texturing, oxidation, SC1 / SC2 / O3 cleaning.',
+ '인라인':'Inline','기판이 흐르며 HF·RCA·O3 세정, 현상·식각·박리, Electrical deposition. 양면 설계 모델(SEAline_WAR).':'Substrates flow through HF · RCA · O3 cleaning, developing / etching / stripping and electrical deposition.',
+ '텍스처링부터 건조까지, 8단계':'From texturing to drying','S.E.A. 장비가 다루는 습식 공정입니다. 실제 순서와 조합은 셀·기판과 라인 구성에 따라 달라집니다.':'Wet processes covered by S.E.A. equipment. The actual order and combination depend on the substrate and line.',
+ '장비':'Business unit','카드를 누르면 전체 사양이 열립니다.':'Tap a card for the full specifications.',
+ '메인 페이지 표기 모델: SEABatch XL 600(배치), SEAline_WAR(인라인·양면 설계). 출처: sea-e2e.com 사업부 페이지':'Source: eng.sea-e2e.com Business unit (Photovoltaic · Glass · Semiconductor).',
+ '우리 라인에 맞는 장비는':'Which equipment fits your line','장비 찾기':'Equipment finder','기판과 방식을 고르면 맞는 장비를 보여 드립니다.':'Pick a substrate and method to see the matching equipment.',
+ '기판':'Substrate','선호 방식':'Preferred method','처리량 계산':'Throughput planner','목표 처리량에 SEABatch XL 몇 대가 필요한지 대략 계산합니다.':'Roughly how many SEABatch XL units your target throughput needs.',
+ '목표 처리량':'Target throughput','가동률':'Uptime','필요 대수 (12,000 w/h 기준)':'Units needed (at 12,000 w/h)',
+ '계산기는 홈페이지에 공개된 최대 처리량(12,000 w/h)만으로 나눈 대략값입니다. 실제 구성은 영업 상담으로 확인하세요.':'A rough estimate using only the published maximum of 12,000 w/h. Confirm the configuration with sales.',
+ '세 분야, 7개국':'Global operation in 7 countries','제조 공장 + 글로벌 서비스':'Production facility & global service','글로벌 서비스':'Global service',
+ '본사 · 경상북도 구미시 4공단로 7길 23-27. 지도는 나라 위치만 나타냅니다.':'Expertise. Agility. Dedication. Our global team works worldwide to handle the diversified needs of every site. The map shows countries only.',
+ '말레이시아 제조·서비스 거점과 함께한 5년.':'Five years with our Malaysian manufacturing and service base.','자주 묻는 질문':'FAQ','상담':'Contact',
+ '사양·공정·서비스를 AI에게 먼저 물어보고, 견적과 일정은 영업팀과 이야기하세요.':'Ask the AI about specs, processes and service first, then talk to sales about quotes and schedules.',
+ 'S·E·A AI 상담':'S·E·A AI assistant','연결 중':'Connecting','보내기':'Send',
+ '안녕하세요. 장비 사양, 공정, 거점, 문의처를 물어보세요. 홈페이지에 공개된 정보로 답합니다.':'Hello. Ask about equipment specs, processes, locations or contacts. Answers are based on the public website.',
+ '라인에 맞는 습식 장비, 상담부터 시작하세요':'Start with a conversation about your line','배치·인라인, 태양광·반도체·글라스. 공정 조건을 알려 주시면 맞는 장비 구성을 제안합니다.':'Batch or inline, PV, semiconductor or glass. Tell us your process conditions and we will propose a configuration.',
+ '(주)에스이에이 · S.E.A. Group':'S.E.A. Group · Industrial wet equipment','고효율 태양광·반도체 패키지 기판을 위한 습식 장비. 2010년 설립, 임직원 200명 이상.':'Wet equipment for PV Si wafers, thin film, glass substrates and semiconductor packaging glass. ISO 9001 · ISO 14001.',
+ '영업 +82-31-478-9109':'Sales +82-31-478-9109','경상북도 구미시 4공단로 7길 23-27':'23-27, 4gongdan-ro 7-gil, Gumi-si, Gyeongsangbuk-do, Korea','습식 공정':'Wet process','회사':'Company','회사 소개':'About',
+ 'S.E.A. Group. 내용 출처: sea-e2e.com (2026-11-24 확인)':'S.E.A. Group. Content: sea-e2e.com · eng.sea-e2e.com (checked 2026-11-24)','전화':'Call'};
+const ATTR={'메시지를 입력하세요':'Type a message','이 보기에서는 AI 상담을 쓸 수 없어요':'AI chat is not available in this view'};
+const orig=new WeakMap();
+const walkText=root=>{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&!n.parentElement.closest('script,style,#log,.lang')?1:2});const out=[];let n;while(n=w.nextNode())out.push(n);return out;};
+const STATIC_NODES=walkText(document.body).filter(n=>DICT[n.nodeValue.trim()]!==undefined);
+STATIC_NODES.forEach(n=>orig.set(n,n.nodeValue));
+const firstMsg=document.querySelector('#log .msg.a');const firstKo=firstMsg?firstMsg.textContent:'';
+function setLang(l){
+  LANG=l;document.documentElement.lang=l;
+  const D=l==='en'?EN:KO;({PRODS,SITES,NOTI,CTC,STATS,PROBS,STEPS,INDS,FAQS}=D);
+  FILT=l==='en'?['All','Photovoltaic','Glass','Semiconductor']:['전체','태양광','Glass','반도체'];curF=FILT[0];
+  STATIC_NODES.forEach(n=>{const k=orig.get(n),t=k.trim(),pre=k.slice(0,k.indexOf(t)),post=k.slice(k.indexOf(t)+t.length);n.nodeValue=l==='en'?pre+DICT[t]+post:k;});
+  document.querySelectorAll('[placeholder]').forEach(el=>{el.dataset.ko=el.dataset.ko||el.placeholder;el.placeholder=l==='en'&&ATTR[el.dataset.ko]?ATTR[el.dataset.ko]:el.dataset.ko;});
+  if(firstMsg)firstMsg.textContent=l==='en'?DICT[firstKo.trim()]||firstKo:firstKo;
+  document.querySelectorAll('.en-only').forEach(e=>e.hidden=l!=='en');document.querySelectorAll('.ko-only').forEach(e=>e.hidden=l==='en');
+  document.querySelectorAll('.lang b').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+  document.querySelectorAll('.lang').forEach(b=>b.setAttribute('aria-label',l==='en'?'한국어로 보기':'View in English'));
+  renderStatic();drawProds();drawOpts();pick();calc();drawCtc();
+  document.getElementById('sites').innerHTML=SITES.map(([n,r,f])=>`<p><i class="lg ${f?'f':'s'}"></i><b>${n}</b><span>${r}</span></p>`).join('');
+  drawMap();if(window.__drawChips)window.__drawChips();
+  document.querySelectorAll('#probs .rv,#steps .rv,#inds .rv').forEach(el=>el.classList.add('on'));
+  try{localStorage.setItem('sea-lang',l);}catch{}
+}
+document.querySelectorAll('.lang').forEach(b=>b.addEventListener('click',()=>setLang(LANG==='en'?'ko':'en')));
+let saved='ko';try{saved=localStorage.getItem('sea-lang')||'ko';}catch{}
+setLang(saved==='en'?'en':'ko');
+
+// 히어로 영상: 파일이 있을 때만 보이고, 화면 밖이면 멈추고, 동작 줄이기 설정이면 재생 안 함
+{const v=document.getElementById('heroVideo');
+ if(v&&!reduce){v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=true;
+  const tryPlay=()=>{const p=v.play();if(p&&p.catch)p.catch(()=>{});};
+  v.addEventListener('loadeddata',()=>{v.hidden=false;tryPlay();},{once:true});
+  v.addEventListener('pause',()=>{if(heroOn&&!document.hidden)setTimeout(tryPlay,120);});
+  let heroOn=true;const vio=new IntersectionObserver(es=>{heroOn=es[0].isIntersecting;heroOn?tryPlay():v.pause();},{rootMargin:'120px'});vio.observe(v.parentElement);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&heroOn)tryPlay();});
+  ['touchstart','click','scroll'].forEach(ev=>addEventListener(ev,tryPlay,{once:true,passive:true}));
+  v.load();}}
+// 나타나기 + 숫자 올라가기
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;en.target.classList.add('on');io.unobserve(en.target);}),{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+const countUp=()=>document.querySelectorAll('.cnt[data-c="1"]').forEach(el=>{const v=+el.dataset.v,t0=performance.now();const f=n=>{const k=Math.min(1,(n-t0)/1400);el.textContent=Math.round(v*(1-(1-k)**3));if(k<1)requestAnimationFrame(f);};reduce?el.textContent=v:requestAnimationFrame(f);});
+new MutationObserver((m,o)=>{if(document.body.classList.contains('in')){countUp();o.disconnect();}}).observe(document.body,{attributes:true,attributeFilter:['class']});
+
+// ---------- intro: 64 cubes (three.js) → particles → SEA ----------
+const intro=document.getElementById('intro'),cv=document.getElementById('fx'),cubeCv=document.getElementById('cubes3d'),hint=document.getElementById('hint');
+function doEnter(){intro.classList.add('gone');document.body.classList.add('in');document.body.classList.remove('lock');setTimeout(()=>{intro.style.display='none';},950);}
+const gl=cv.getContext('webgl2',{premultipliedAlpha:true,antialias:false});
+let exitStart=-1;
+if(!gl){doEnter();}
+else{
+// --- 64 정육면체: 4×4×4, 맨 앞층 16개의 앞면 = 로고 ---
+// 질감·입체감: 둥근 모서리, PP 판재 같은 새틴(약한 클리어코트) + 미세 결(범프·거칠기 맵),
+// 소프트박스 반사(환경맵), 그림자(큐브끼리·바닥), 림 라이트
+let T=null;
+if(window.THREE&&cubeCv){
+  const renderer=new THREE.WebGLRenderer({canvas:cubeCv,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));
+  renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.NoToneMapping;
+  renderer.physicallyCorrectLights=false;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(16,1,1,2000),group=new THREE.Group();scene.add(group);
+  // 둥근 모서리 정육면체: 잘게 나눈 상자의 꼭짓점을 안쪽 상자 + 반지름으로 밀어냄
+  const roundedBox=(s,rad,seg)=>{const g=new THREE.BoxGeometry(s,s,s,seg,seg,seg),p=g.attributes.position,v=new THREE.Vector3(),inner=s/2-rad,c=new THREE.Vector3();
+    for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i);c.set(clamp(v.x,-inner,inner),clamp(v.y,-inner,inner),clamp(v.z,-inner,inner));v.sub(c).normalize().multiplyScalar(rad).add(c);p.setXYZ(i,v.x,v.y,v.z);}
+    g.computeVertexNormals();return g;};
+  const geo=roundedBox(4,.42,8);
+  // PP 판재 결: 캔버스로 만든 미세 노이즈 + 아주 옅은 가로 결
+  const nc=document.createElement('canvas');nc.width=nc.height=256;const nx=nc.getContext('2d'),id=nx.createImageData(256,256);
+  for(let y=0;y<256;y++)for(let x=0;x<256;x++){const k=(y*256+x)*4,n=150+Math.random()*60+Math.sin(y*.35+Math.sin(x*.05)*2)*10;id.data[k]=id.data[k+1]=id.data[k+2]=n;id.data[k+3]=255;}
+  nx.putImageData(id,0,0);
+  const grain=new THREE.CanvasTexture(nc);grain.wrapS=grain.wrapT=THREE.RepeatWrapping;grain.repeat.set(1.5,1.5);
+  // 환경 반사: 흰 방 + 소프트박스 몇 개를 큐브맵으로 구워 씀
+  const pm=new THREE.PMREMGenerator(renderer),env=new THREE.Scene();
+  env.add(new THREE.Mesh(new THREE.SphereGeometry(50,32,16),new THREE.MeshBasicMaterial({color:0xe9e7e1,side:THREE.BackSide})));
+  [[0,30,10,30,1.4],[-30,10,20,14,1],[30,4,-10,10,.7],[0,-20,30,40,.35]].forEach(([x,y,z,sz,k])=>{const box=new THREE.Mesh(new THREE.PlaneGeometry(sz,sz*.6),new THREE.MeshBasicMaterial({color:new THREE.Color(k,k,k),side:THREE.DoubleSide}));box.position.set(x,y,z);box.lookAt(0,0,0);env.add(box);});
+  scene.environment=pm.fromScene(env,.04).texture;
+  const cubes=[];
+  for(let z=0;z<4;z++)for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    const col=COLS[r][c];
+    const mats=new THREE.MeshPhysicalMaterial({color:new THREE.Color(col).convertSRGBToLinear(),roughness:.5,metalness:0,clearcoat:.32,clearcoatRoughness:.3,
+      roughnessMap:grain,bumpMap:grain,bumpScale:.012,envMapIntensity:.38});
+    const m=new THREE.Mesh(geo,mats);m.castShadow=true;m.receiveShadow=true;
+    const home=new THREE.Vector3(POS[c]+2-10,-(POS[r]+2-10),-(POS[z]+2-10));
+    m.position.copy(home);m.userData={home,spin:new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).multiplyScalar(6)};
+    group.add(m);cubes.push(m);}
+  // 조명: 하늘·바닥 반사광 + 위 왼쪽 키 라이트(그림자) + 뒤 오른쪽 림 라이트
+  scene.add(new THREE.HemisphereLight(0xffffff,0xd9cfc2,.5));
+  const key=new THREE.DirectionalLight(0xffffff,.78);key.position.set(-16,34,14);key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048);Object.assign(key.shadow.camera,{left:-34,right:34,top:34,bottom:-34,near:1,far:110});key.shadow.radius=9;key.shadow.bias=-.0006;key.shadow.normalBias=.02;scene.add(key);
+  const rim=new THREE.DirectionalLight(0xfff1e6,.35);rim.position.set(24,6,-26);scene.add(rim);
+  // 바닥 그림자(바닥은 보이지 않고 그림자만)
+  // 실제 그림자: 큐브가 바닥에 드리우는 그림자(바닥은 안 보이고 그림자만), 회전에 따라 실시간으로 바뀜
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(220,220),new THREE.ShadowMaterial({opacity:.16}));
+  floor.rotation.x=-Math.PI/2;floor.position.y=-17;floor.receiveShadow=true;scene.add(floor);
+  T={renderer,scene,cam,group,cubes,floor,k:1,v:new THREE.Vector3()};
+}
+const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o;};
+const prog=gl.createProgram();
+gl.attachShader(prog,sh(gl.VERTEX_SHADER,`#version 300 es
+in vec4 a;in float b;in vec3 c;uniform vec2 uRes;out float vA;out float vS;out vec3 vC;
+void main(){vec2 p=a.xy/uRes*2.-1.;gl_Position=vec4(p.x,-p.y,0.,1.);gl_PointSize=a.z;vA=a.w;vS=max(b,1.8/a.z);vC=c;}`));
+gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,`#version 300 es
+precision highp float;in float vA;in float vS;in vec3 vC;out vec4 o;
+void main(){float r=length(gl_PointCoord-.5)*2.;float e=(1.-smoothstep(1.-vS,1.,r))*vA;o=vec4(vC*e,e);}`));
+gl.linkProgram(prog);const uRes=gl.getUniformLocation(prog,'uRes');
+const N=7000,STR=8,buf=new Float32Array(N*STR);
+const vbo=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferData(gl.ARRAY_BUFFER,buf.byteLength,gl.DYNAMIC_DRAW);
+const vao=gl.createVertexArray();gl.bindVertexArray(vao);
+[['a',4,0],['b',1,16],['c',3,20]].forEach(([n,sz,off])=>{const l=gl.getAttribLocation(prog,n);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,sz,gl.FLOAT,false,STR*4,off);});
+gl.bindVertexArray(null);
+// 입자마다: 어느 정육면체에서 나오는지(ci), 그 안의 위치(ox,oy), 글자로 갈지(toT)
+const ci=new Uint8Array(N),ox=new Float32Array(N),oy=new Float32Array(N),toT=new Uint8Array(N),tx=new Float32Array(N),ty=new Float32Array(N);
+const th=new Float32Array(N),rr=new Float32Array(N),yy=new Float32Array(N),ph=new Float32Array(N),bj=new Float32Array(N),pc=new Float32Array(N*3),s=new Float32Array(N),v=new Float32Array(N),dl=new Float32Array(N);
+const MAG=hex('#ff007d'),MAG2=hex('#ff4d6d');
+// 로고 4×4 색판에서 (u 가로, w 세로, 0~1) 위치의 색을 부드럽게 섞어 꺼냄
+const GRID=COLS.map(r=>r.map(hex));
+const logoAt=(u,w)=>{const gx=clamp(u,0,1)*3,gy=clamp(w,0,1)*3,x0=Math.min(2,gx|0),y0=Math.min(2,gy|0),fx=gx-x0,fy=gy-y0,o=[0,0,0];
+  for(let k=0;k<3;k++){const a=lerp(GRID[y0][x0][k],GRID[y0][x0+1][k],fx),b2=lerp(GRID[y0+1][x0][k],GRID[y0+1][x0+1][k],fx);o[k]=lerp(a,b2,fy);}return o;};
+const cc=new Float32Array(64*3);for(let c=0;c<64;c++)cc.set(hex(COLS[(c>>2)&3][c&3]),c*3);
+for(let i=0;i<N;i++){const c=i%64,r=(c>>2)&3,cl=c&3;ci[i]=c;ox[i]=Math.random()-.5;oy[i]=Math.random()-.5;pc.set(hex(COLS[r][cl]),i*3);
+  toT[i]=Math.random()<.58?1:0;th[i]=Math.random()*6.283;rr[i]=.55+Math.random()*.55;yy[i]=(Math.random()-.5)*2;ph[i]=Math.random()*6.283;bj[i]=.6+Math.random()*.9;}
+let W=0,H=0,dpr=1,tG=2;
+const csx=new Float32Array(64),csy=new Float32Array(64),css=new Float32Array(64);
+function targets(){
+  if(!W)return;
+  const o=document.createElement('canvas');o.width=Math.ceil(W);o.height=Math.ceil(H);const x=o.getContext('2d');
+  let fs=Math.min(H*.3,W*.28);const setF=()=>{x.font=`800 ${fs}px Geist, Inter, system-ui, sans-serif`;if('letterSpacing' in x)x.letterSpacing=`${fs*.06}px`;};setF();
+  let w=x.measureText('SEA').width;if(w>W*.82){fs*=W*.82/w;setF();}
+  x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';x.fillText('SEA',W/2,H/2);
+  const img=x.getImageData(0,0,o.width,o.height).data,need=toT.reduce((a,b)=>a+b,0);let pts=[];
+  for(let g=1.2;g<10;g+=.08){tG=g;pts=[];for(let y=0;y<o.height;y+=g)for(let xx=0;xx<o.width;xx+=g)if(img[((y|0)*o.width+(xx|0))*4+3]>140)pts.push([xx-W/2,y-H/2]);if(pts.length<=need*1.05)break;}
+  pts.sort((p,q)=>p[0]-q[0]);
+  const idx=[];for(let i=0;i<N;i++)if(toT[i])idx.push(i);
+  idx.sort((i,j)=>((ci[i]&3)+ox[i])-((ci[j]&3)+ox[j]));
+  idx.forEach((i,n)=>{const p=pts[Math.floor(n*pts.length/idx.length)]||[0,0];tx[i]=p[0];ty[i]=p[1];});
+}
+function resize(){const r=cv.getBoundingClientRect();if(!r.width)return;W=r.width;H=r.height;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  if(T){T.renderer.setSize(W,H,false);T.cam.aspect=W/H;const k=H/(2*Math.tan(8*Math.PI/180));T.k=k;const d=Math.max(20*k/((W/H<1?.5:.42)*Math.min(W,H)),52)*(W/H<1?1.08:1),el=.46;T.cam.position.set(0,d*Math.sin(el),d*Math.cos(el));T.cam.lookAt(0,W/H<1?-2.2:-6,0);T.cam.updateProjectionMatrix();
+    // SEA 글자 넓이 = 로고(앞면 20단위) 화면 넓이
+    const wm=document.querySelector('.wordmark');if(wm){const want=20*k/d;wm.style.fontSize='100px';wm.style.letterSpacing='.08em';
+      const sp=wm.querySelector('span')||wm;const r0=sp.getBoundingClientRect().width||1;wm.style.fontSize=(100*want/r0).toFixed(1)+'px';}}
+  targets();}
+const cvRO=new ResizeObserver(resize);cvRO.observe(cv);resize();
+if(document.fonts)document.fonts.ready.then(()=>{targets();resize();});
+
+const S=(x,k,c)=>({x,v:0,t:x,k,c}),st=(o,dt)=>{o.v+=(-o.k*(o.x-o.t)-o.c*o.v)*dt;o.x+=o.v*dt;};
+let t=0,mode=0,drag=null,hoverOn=false,mx=0,my=0,last=performance.now(),yaw=-.55,yawV=.07,enterAt=-1;
+const burst=S(0,22,9),pitch=S(.06,40,10),hx=S(0,90,14),hy=S(0,90,14);
+function setMode(m){mode=m;if(m)for(let i=0;i<N;i++)pc.set(cc.subarray(ci[i]*3,ci[i]*3+3),i*3);for(let i=0;i<N;i++){const k=((ci[i]&3)+ox[i]+.5)/4;dl[i]=(m?t+.08+k*.5:t+(1-k)*.35)+Math.random()*.2;}
+  burst.t=m;hint.style.opacity=m?0:'';const wm=document.querySelector('.wordmark');if(wm)wm.style.opacity=m?0:'';}
+// 누르면 SEA가 만들어지고 다 모이면 바로 메인으로
+const go=()=>{if(exitStart>=0||mode)return;setMode(1);enterAt=t+(reduce?.4:2.3);};
+const local=e=>{const b=cv.getBoundingClientRect();return[(e.clientX-b.left)*W/b.width,(e.clientY-b.top)*H/b.height];};
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);const[x,y]=local(e);drag={x0:x,y0:y,x,y,t,moved:false,vx:0};});
+cv.addEventListener('pointermove',e=>{const[x,y]=local(e);mx=x;my=y;if(e.pointerType==='mouse')hoverOn=true;if(!drag)return;
+  if(Math.hypot(x-drag.x0,y-drag.y0)>6)drag.moved=true;
+  const ddt=Math.max(1/240,t-drag.t);if(drag.moved){const dx=x-drag.x;yaw+=dx*.009;drag.vx=lerp(drag.vx,dx*.009/ddt,.5);yawV=drag.vx;pitch.t=clamp(pitch.t+(y-drag.y)*.006,-.3,1.1);}drag.x=x;drag.y=y;drag.t=t;});
+const end=()=>{if(!drag)return;if(!drag.moved)go();drag=null;};
+cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);cv.addEventListener('pointerleave',()=>{hoverOn=false;});
+cv.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+document.getElementById('skip').addEventListener('click',()=>{if(!mode)setMode(1);exitStart=t;enterAt=-1;});
+document.getElementById('replay').addEventListener('click',e=>{e.preventDefault();scrollTo({top:0});intro.style.display='';document.body.classList.remove('in');document.body.classList.add('lock');
+  requestAnimationFrame(()=>intro.classList.remove('gone'));exitStart=-1;enterAt=-1;hint.style.opacity='';for(let i=0;i<N;i++){s[i]=0;v[i]=0;}setMode(0);burst.x=0;burst.v=0;cv.focus();});
+
+function draw(dt){
+  if(!W)return;
+  if(enterAt>=0&&t>=enterAt&&exitStart<0){exitStart=t;enterAt=-1;}
+  if(!drag){yawV+=((reduce?.02:.07)-yawV)*(1-Math.exp(-dt*.9));pitch.t+=(.06+.04*Math.sin(t*.12)-pitch.t)*(1-Math.exp(-dt*.5));}
+  yaw+=yawV*dt;st(pitch,dt);
+  hx.t=hoverOn?clamp((mx-W/2)/W,-.5,.5):0;hy.t=hoverOn?clamp((my-H/2)/H,-.5,.5):0;st(hx,dt);st(hy,dt);st(burst,dt);
+  const tt=reduce?0:t,cx=W/2,cy=H/2,F=1000;
+  const ex=exitStart<0?0:clamp((t-exitStart)/1.5,0,1),ee=ex*ex;
+  if(ex>=1&&exitStart>=0&&!document.body.classList.contains('in'))doEnter();
+  intro.style.background=ex>.35?'transparent':'';
+  // --- 정육면체: 천천히 좌우로 돌다가 정면(로고)을 지나감, 누르면 터지며 사라짐
+  const b=clamp(burst.x,0,1.3);
+  if(T){
+    T.group.rotation.set(pitch.x+hy.x*.35,yaw+hx.x*.5,0);
+    T.floor.material.opacity=.16*Math.max(0,1-b*1.4);
+    T.cubes.forEach(m=>{const h=m.userData.home,sp=m.userData.spin,f=1+b*2.2;m.position.set(h.x*f,h.y*f,h.z*f+b*30);
+      m.rotation.set(sp.x*b,sp.y*b,sp.z*b);const sc=Math.max(0,1-b*1.15);m.scale.setScalar(sc);m.visible=sc>0;});
+    T.scene.updateMatrixWorld();
+    // 입자 출발점 = 각 정육면체의 화면 위치 (터지기 직전 모양 그대로)
+    for(let c=0;c<64;c++){const m=T.cubes[c];T.v.setFromMatrixPosition(m.matrixWorld);const dz=T.cam.position.distanceTo(T.v);T.v.project(T.cam);
+      csx[c]=(T.v.x+1)/2*W-cx;csy[c]=(1-T.v.y)/2*H-cy;css[c]=4*T.k/dz*Math.max(.35,1-b*.6);}
+    // 어느 쪽을 보든 화면에 보이는 배치가 늘 로고 정면 색(오른쪽 위 오렌지 → 왼쪽 아래 크림슨)이 되도록,
+    // 정육면체마다 화면 위치를 로고 4×4 색판에 대어 색을 고른다 (부드럽게 섞어서)
+    if(b<.02){let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(let c=0;c<64;c++){x0=Math.min(x0,csx[c]);x1=Math.max(x1,csx[c]);y0=Math.min(y0,csy[c]);y1=Math.max(y1,csy[c]);}
+      for(let c=0;c<64;c++){const u=(csx[c]-x0)/Math.max(1,x1-x0),w=(csy[c]-y0)/Math.max(1,y1-y0),col=logoAt(u,w);
+        const k=c*3;cc[k]+=(col[0]-cc[k])*.18;cc[k+1]+=(col[1]-cc[k+1])*.18;cc[k+2]+=(col[2]-cc[k+2])*.18;
+        T.cubes[c].material.color.setRGB(cc[k],cc[k+1],cc[k+2]).convertSRGBToLinear();}}
+    T.renderer.render(T.scene,T.cam);
+  }else{const u=Math.min(W,H)*.46/20;for(let c=0;c<64;c++){csx[c]=(POS[c&3]+2-10)*u;csy[c]=(POS[(c>>2)&3]+2-10)*u;css[c]=4*u;}}
+  const ty0=.16*Math.sin(tt*.4)+hx.x*.4,ctY=Math.cos(ty0),stY=Math.sin(ty0),k=60,cd=11;
+  for(let i=0;i<N;i++){
+    const tg=t>=dl[i]?mode:1-mode;
+    if(s[i]!==tg||v[i]!==0){const h=dt/2;for(let n=0;n<2;n++){v[i]+=(-k*(s[i]-tg)-cd*v[i])*h;s[i]+=v[i]*h;}if(Math.abs(s[i]-tg)<1e-4&&Math.abs(v[i])<1e-3){s[i]=tg;v[i]=0;}}
+    const q=i*STR,uu=clamp(s[i],0,1),c=ci[i];
+    if(s[i]<=0&&ex===0){buf[q+3]=0;buf[q+2]=1;continue;}
+    let ax=csx[c]+ox[i]*css[c],ay=csy[c]+oy[i]*css[c],az=0;
+    let bx,by,bz,bs,ba;
+    if(toT[i]){bx=tx[i]*ctY;bz=tx[i]*stY;by=ty[i];bs=Math.max(2.4,tG*.78);ba=1;}
+    else{const a=th[i]+tt*.06*bj[i],R=Math.max(W,H)*.48*rr[i];bx=Math.cos(a)*R;bz=Math.sin(a)*R*.7-120;by=yy[i]*H*.42+Math.sin(tt*.5+ph[i])*8;bs=2.2;ba=.8;}
+    const o1x=ax*1.6+Math.cos(ph[i])*140,o1y=ay*1.6+Math.sin(ph[i])*140,o1z=220*bj[i];
+    const e=1-uu,b0=e*e*e,b1=3*e*e*uu,b2=3*e*uu*uu,b3=uu*uu*uu;
+    let X=b0*ax+b1*o1x+b2*bx*1.15+b3*bx,Y=b0*ay+b1*o1y+b2*(by*1.15-30)+b3*by,Z=b0*az+b1*o1z+b2*bz+b3*bz;
+    if(s[i]>1){const o=s[i]-1;X+=bx*.15*o;Y+=by*.15*o;}
+    let size=lerp(css[c]/9,bs,uu),al=lerp(0,ba,Math.min(1,uu*2.5));
+    let r=pc[i*3],g=pc[i*3+1],bb=pc[i*3+2];
+    if(toT[i]){const sh2=.5+.5*Math.sin(tt*1.4-tx[i]*.01);r=lerp(r,lerp(MAG[0],MAG2[0],sh2),uu);g=lerp(g,lerp(MAG[1],MAG2[1],sh2),uu);bb=lerp(bb,lerp(MAG[2],MAG2[2],sh2),uu);}
+    if(ex>0){X+=(X+Math.cos(ph[i])*40)*ee*2.4;Y+=(Y+Math.sin(ph[i])*40)*ee*2.4;Z+=ee*1400*bj[i];al*=(1-ex)*(1-ex);}
+    Z=Math.min(Z,F-60);const sc=F/(F-Z),front=toT[i]?1:clamp(.6+Z/900,.35,1);
+    buf[q]=(cx+X*sc)*dpr;buf[q+1]=(cy+Y*sc)*dpr;buf[q+2]=Math.max(1.2,size*sc)*dpr;buf[q+3]=clamp(al*front,0,1);buf[q+4]=ex>0?.5:.15;buf[q+5]=r;buf[q+6]=g;buf[q+7]=bb;
+  }
+  gl.viewport(0,0,cv.width,cv.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.useProgram(prog);gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vbo);gl.bufferSubData(gl.ARRAY_BUFFER,0,buf);gl.uniform2f(uRes,cv.width,cv.height);gl.drawArrays(gl.POINTS,0,N);
+
+}
+const loop=now=>{const dt=Math.min((now-last)/1000,1/30);last=now;if(intro.style.display!=='none'){t+=dt;draw(dt);}requestAnimationFrame(loop);};
+requestAnimationFrame(loop);
+}
+
+// ---------- AI chat ----------
+const log=document.getElementById('log'),qEl=document.getElementById('q'),send=document.getElementById('send'),stEl=document.getElementById('st'),chips=document.getElementById('chips'),chat=document.getElementById('chat');
+const SYS0='너는 (주)에스이에이 S.E.A. Group 홈페이지의 AI 상담원이다. 아래 홈페이지 공개 정보만 회사 사실로 쓴다.\n'+
+ '회사: 2010년 설립, 임직원 200명 이상, 2022년 매출 498억 원, 본사 경북 구미시 4공단로 7길 23-27. 태양광·반도체·PCB·FPD 습식 식각 장비 25년 이상 경험. 박막 태양전지·유리 기판용 습식 장비, TOPCon·PERC·HIT·탠덤 셀 습식 공정, 글라스 반도체 패키지 장비. 2022 Malaysia 5 Year Award.\n'+
+ '사업: 태양광용 습식 장비, 반도체 패키지용 습식 장비, PCB·FPD(LCD) 습식 장비.\n'+
+ '제품: '+PRODS.map(p=>p.n+'('+p.f+', '+p.type+'): '+p.d+' '+p.s.map(x=>x[0]+' '+x[1]).join('; ')).join(' / ')+'. 메인 페이지 모델명 SEABatch XL 600(배치), SEAline_WAR(인라인, 양면 설계).\n'+
+ '거점: '+SITES.map(x=>x[0]+'('+x[1]+')').join(', ')+'. 제조 공장은 한국·말레이시아.\n'+
+ '문의: 대표 +82-31-478-9106, 영업 +82-31-478-9109, 팩스 +82-31-478-9107, info@sea-e2e.com. 채용 https://sea-e2e.recruiter.co.kr/career/home, 영문 사이트 http://www.eng.sea-e2e.com.\n'+
+ '규칙: 묻는 언어로 짧고 정확하게 답한다. 위에 없는 회사 정보(가격, 납기, 고객사, 사람)는 모른다고 말하고 영업 연락처를 안내한다. 공정·장비 일반 지식은 설명하되 확실하지 않으면 그렇다고 말한다. 마크다운 기호 없이 평문으로 답한다.';
+const hist=[];let sample=null,busy=false;
+const add=(cls,txt)=>{const d=document.createElement('div');d.className='msg '+cls;d.textContent=txt;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;};
+window.__drawChips=()=>{chips.innerHTML='';(LANG==='en'?['SEABatch XL throughput?','What is a TOPCon wet process?','Semiconductor substrate sizes','How do I get a quote?']:['SEABatch XL 처리량은?','TOPCon 습식 공정이 뭐예요?','반도체 장비 기판 크기','견적 문의는 어디로?']).forEach(x=>{
+  const b=document.createElement('button');b.type='button';b.textContent=x;b.addEventListener('click',()=>{qEl.value=x;ask();});chips.appendChild(b);});};window.__drawChips();
+async function ask(){
+  const text=qEl.value.trim();if(!text||busy||!sample)return;
+  busy=true;send.disabled=true;qEl.value='';add('u',text);hist.push({role:'user',content:text});
+  const out=add('a',tr('생각 중…','Thinking…'));
+  const input=hist.map((m,i)=>i===0?{role:'user',content:SYS0+(LANG==='en'?'\nThe user is viewing the English site: answer in English.':'')+'\n\n질문: '+m.content}:m);
+  try{const r=await sample(input,{cache:false,onText:({text})=>{out.textContent=text;log.scrollTop=log.scrollHeight;}});out.textContent=r.text;hist.push({role:'assistant',content:r.text});}
+  catch(e){hist.pop();out.remove();add('e',e&&e.code==='rate_limited'?tr('요청이 많아요. 잠시 후 다시 보내 주세요.','Too many requests. Please try again shortly.'):e&&e.code==='not_granted'?'AI 사용 권한이 허용되지 않았어요.':'답을 받지 못했어요. 다시 시도해 주세요.');}
+  busy=false;send.disabled=false;qEl.focus();
+}
+document.getElementById('f').addEventListener('submit',e=>{e.preventDefault();ask();});
+qEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();ask();}});
+(async()=>{try{sample=window.claude&&await window.claude.use('sample');}catch{sample=null;}
+  if(sample){stEl.textContent=tr('온라인','Online');chat.classList.add('on');send.disabled=false;}
+  else{stEl.textContent=tr('오프라인','Offline');chips.hidden=true;qEl.disabled=true;qEl.placeholder=tr('이 보기에서는 AI 상담을 쓸 수 없어요','AI chat is not available in this view');qEl.dataset.ko='이 보기에서는 AI 상담을 쓸 수 없어요';}})();
+}
+</script>
+</body>
+</html>
