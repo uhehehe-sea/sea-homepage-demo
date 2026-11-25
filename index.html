@@ -180,8 +180,29 @@ input[type=range]{width:100%;accent-color:var(--mag);height:28px}
 .netbox{position:relative;border-radius:24px;border:1px solid var(--line);background:var(--pp);overflow:hidden}
 .fig{position:relative;min-height:400px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
 #map .grid{fill:rgba(40,35,20,.14)}#map text{fill:var(--ink);font:600 13px Geist,"Noto Sans KR",sans-serif}
-.sites{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0 18px;margin-top:18px}
-.sites p{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}.sites span{color:var(--muted);font-size:13px;margin-left:auto}
+.sites{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 22px;margin-top:10px}
+.sites p{display:grid;grid-template-columns:12px minmax(0,1fr);column-gap:10px;row-gap:2px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+.sites p b{line-height:1.3}.sites p span{grid-column:2;color:var(--muted);font-size:13px;line-height:1.4}
+.other-h{font-size:16px;margin-top:36px}
+.hub{display:grid;justify-items:center}
+.head-card,.body-card{width:100%;background:var(--pp);border:1px solid var(--line);border-radius:24px}
+.head-card{max-width:760px;padding:18px 22px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 24px;align-items:center}
+.hc-tag{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px}
+.flag{font-size:11px;font-weight:800;letter-spacing:.06em;padding:5px 8px;border-radius:7px;background:var(--ink);color:#fff}.flag.us{background:var(--grad)}
+.hc-list{display:flex;flex-wrap:wrap;gap:8px}
+.hc-list p{display:grid;padding:8px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.hc-list b{font-size:14px;line-height:1.3}.hc-list span{font-size:12px;color:var(--muted);line-height:1.35}
+.spine{height:44px;width:2px;background:var(--grad);position:relative}.spine i{position:absolute;left:50%;bottom:-5px;width:10px;height:10px;border-radius:50%;background:var(--mag);transform:translateX(-50%)}
+.body-card{padding:22px;border-color:rgba(255,0,125,.28);box-shadow:0 30px 80px -50px rgba(255,0,125,.45)}
+.bc-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.bc-sub{color:var(--muted);font-size:14px}
+.bc-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:stretch}
+.fig.ga{min-height:380px;border-radius:18px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.us-list{display:grid;gap:10px;align-content:start}
+.us-list article{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px 12px;padding:14px;border-radius:16px;background:var(--bg);border:1px solid var(--line)}
+.us-list .n{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff;grid-row:span 2}
+.us-list b{font-size:16px;line-height:1.3}.us-list span{font-size:13px;color:var(--muted);line-height:1.4}
+#map text{paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+@media(max-width:860px){.bc-grid{grid-template-columns:minmax(0,1fr)}.fig.ga{min-height:300px}.head-card{grid-template-columns:minmax(0,1fr)}}
 .lg{display:inline-block;width:9px;height:9px;border-radius:50%}.lg.f{background:var(--mag)}.lg.s{background:var(--org)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}.legend span{display:flex;align-items:center;gap:8px}
 .award{position:relative;border-radius:24px;overflow:hidden;min-height:340px;display:grid;align-items:end;margin-top:40px}
@@ -310,7 +331,7 @@ textarea{flex:1;resize:none;font:inherit;font-size:16px;color:var(--ink);backgro
     <div class="hero-media">
       <img src="img/lab.webp" alt="S.E.A. 습식 장비 내부 공간">
       <!-- 히어로 영상: assets/video/hero.mp4 (+ hero.webm) 파일을 넣으면 자동 재생. 없으면 위 사진이 그대로 보임 -->
-      <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback poster="img/lab.webp" aria-hidden="true" hidden>
+      <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback poster="img/hero-poster.jpg" aria-hidden="true" hidden>
         <source src="assets/video/hero.mp4" type="video/mp4"><source src="assets/video/hero.webm" type="video/webm">
       </video>
     </div>
@@ -324,7 +345,6 @@ textarea{flex:1;resize:none;font:inherit;font-size:16px;color:var(--ink);backgro
         <div class="hero-stats" id="stats"></div>
       </div>
     </div>
-    <span class="media-note">sea-e2e.com 사업부 이미지</span>
   </section>
 
   <!-- 3. 문제 -->
@@ -387,12 +407,20 @@ textarea{flex:1;resize:none;font:inherit;font-size:16px;color:var(--ink);backgro
 
   <!-- 9. 분야 · 거점 -->
   <section class="band alt" id="industries"><div class="wrap">
-    <div class="sec-h rv"><div><span class="eyebrow"><i></i>Industries · Coverage</span><h2>세 분야, 7개국</h2></div>
-      <p class="legend"><span><i class="lg f"></i>제조 공장 + 글로벌 서비스</span><span><i class="lg s"></i>글로벌 서비스</span></p></div>
+    <div class="sec-h rv"><div><span class="eyebrow"><i></i>Industries · Coverage</span><h2>한국 본사, 미국 현장</h2></div>
+      <p class="legend"><span><i class="lg f"></i>S.E.A. America</span><span><i class="lg s"></i>고객 현장</span></p></div>
     <div class="inds" id="inds"></div>
-    <div id="coverage" class="netbox rv"><div class="fig"><svg id="map" role="img" aria-label="거점 7개국 위치"></svg></div></div>
+    <div id="coverage" class="hub rv">
+      <article class="head-card"><div class="hc-tag"><span class="flag">KR</span><span>본사 · 한국</span></div><div class="hc-list" id="krhq"></div></article>
+      <div class="spine" aria-hidden="true"><i></i></div>
+      <article class="body-card">
+        <div class="bc-top"><div class="hc-tag"><span class="flag us">US</span><span>S.E.A. America · 조지아</span></div><p class="bc-sub">미국 지사와 현장</p></div>
+        <div class="bc-grid"><div class="fig ga"><svg id="map" role="img" aria-label="조지아의 S.E.A. America 거점과 현장 위치"></svg></div><div class="us-list" id="ussites"></div></div>
+      </article>
+    </div>
+    <h3 class="other-h">그 밖의 글로벌 거점</h3>
     <div class="sites" id="sites"></div>
-    <p class="note">본사 · 경상북도 구미시 4공단로 7길 23-27. 지도는 나라 위치만 나타냅니다.</p>
+    <p class="note">미국 거점·현장은 도시 기준 대략 위치입니다.</p>
     <div class="en-only" hidden><h3 style="margin-top:32px">Certificate</h3><div class="certs"><span>ISO 9001</span><span>ISO 14001</span></div></div>
     <figure class="award rv"><img src="img/award.webp" alt="말레이시아 수상 기념 단체 사진" loading="lazy">
       <div><span class="eyebrow" style="color:#fff"><i></i>Award</span><h2 style="margin-top:10px">2022 Malaysia 5 Year Award</h2><p>말레이시아 제조·서비스 거점과 함께한 5년.</p></div></figure>
@@ -471,7 +499,11 @@ let PRODS=[
   s:[['공정','RCA·O3 세정, 현상·식각·박리'],['세정 방식','롤러·디스크 브러시, 버블젯, 초음파·플라즈마'],['기판','Generation 7'],['특징','분진·파티클 제로 설계, 완전 건조']]},
  {n:'SEAbatch SEMI',f:'반도체',type:'Batch · 수직',img:'semi',d:'수직 배치 장비 가운데 최대 생산량을 내세운 반도체용 장비.',k:['300 mm 웨이퍼','500×500 mm 글라스','±2 ml 도징','파티클 30개 미만'],
   s:[['공정','RCA·SPM·HF·O3·DIO3 세정, 현상·식각·박리, 산화, 특수 건조'],['기판','실리콘 웨이퍼 최대 300 mm, 글라스·세라믹 최대 500×500 mm'],['도징 정확도','±2 ml'],['파티클','RCA 세정 30개 미만, 건조 30개 미만'],['특징','금속 오염 제로, 완전 건조']]}];
-let SITES=[['대한민국','본사 · 경북 구미',1,127,36.1],['말레이시아','제조 · 서비스',1,101.7,3.1],['독일','서비스',0,10.4,51.2],['인도','서비스',0,78.9,21],['베트남','서비스',0,106,16],['싱가포르','서비스',0,103.8,1.35],['미국','서비스',0,-84.4,33.8]];
+let SITES=[['말레이시아','제조 공장 · 페낭',1],['독일','에슈보른 · PM, 엔지니어링, 부품 조달',0],['인도','첸나이 · 고객 서비스',0],['베트남','호찌민',0],['싱가포르','싱가포르',0]];
+let KRHQ=[['구미','본사 · R&D'],['증평','제조 공장'],['안양','영업 사무소']];
+// 미국: 조지아 지사(슈가힐)와 고객 현장 — 좌표는 도시 기준 대략 위치
+let USS=[{n:'슈가힐 오피스',r:'S.E.A. America 사무소',lat:34.106,lon:-84.034,own:1},{n:'슈가힐 공장',r:'S.E.A. America 공장',lat:34.085,lon:-84.07,own:1},
+ {n:'한화 카터스빌',r:'고객 현장 · Hanwha Qcells',lat:34.165,lon:-84.80,own:0},{n:'앱솔릭스 커빙턴',r:'고객 현장 · Absolics',lat:33.597,lon:-83.86,own:0}];
 let NOTI=[['신주배정(무상증자) 통지서','2026-11 초','주주에게 신주 배정 내역을 알리고 확인을 요청'],['임시주주총회 소집통지서','2026-11 초','상법과 정관에 따른 임시주주총회 개최 안내'],
  ['임시주주총회 기준일 설정 공고','2026-07-31','권리주주 확정 기준일 2026-08-18'],['신주배정기준일 공고','2026-07-31','신주 배정 기준일 2026-08-19'],
  ['신주발행 공고','2026-07-31','준비금 일부 자본전입 — 기명식 보통주 5,834,550주, 1주당 100원, 배정 기준일 2026-08-19'],['신주배정(무상증자) 통지서','2026-05-19','신주 배정 내역 통지'],
@@ -488,7 +520,7 @@ let FAQS=[['어떤 셀 공정을 지원하나요?','TOPCon, PERC, HIT 셀의 습
  ['기판 크기는 어디까지 되나요?','태양광 장비(SEABatch XL, SEAline XL)는 최대 M12(210×210 mm), SEAline Glass Cleaner는 Generation 7, SEAbatch SEMI는 웨이퍼 300 mm·글라스/세라믹 500×500 mm까지입니다.'],
  ['배치와 인라인은 어떻게 다른가요?','배치는 수직으로 한 번에 여러 장(SEABatch XL 최대 600장)을 담가 처리하고, 인라인은 기판이 라인을 따라 흐르며 세정·식각 등을 연속으로 거칩니다. 라인 구성과 공정에 따라 고릅니다.'],
  ['장비를 맞춤 제작할 수 있나요?','홈페이지 소개에 따르면 SEABatch XL 600은 용도와 공정에 맞게 맞춤 제작할 수 있습니다. 조건은 영업팀(+82-31-478-9109)과 상의하세요.'],
- ['해외 설치·서비스가 되나요?','한국·말레이시아 제조 공장과 함께 독일·인도·베트남·싱가포르·미국에 글로벌 서비스 거점이 있습니다.'],
+ ['미국에서도 지원하나요?','조지아 슈가힐에 S.E.A. America 사무소와 공장이 있고, 한화 카터스빌·앱솔릭스 커빙턴 현장을 지원합니다. 그 밖에 독일·인도·베트남·싱가포르에 글로벌 서비스 거점이 있습니다.'],
  ['견적은 어떻게 받나요?','가격과 납기는 공개되어 있지 않습니다. info@sea-e2e.com 또는 영업 +82-31-478-9109로 문의하세요.']];
 
 
@@ -503,7 +535,10 @@ const EN={
    s:[['Process','RCA & O3 cleaning, Developing / Etching / Stripping'],['Cleaning','Roller brush / Disc brush, Bubble jet, Ultrasonic / Plasma'],['Glass size','Generation 7'],['Features','Zero-particle design, perfect drying']]},
   {n:'SEAbatch SEMI',f:'Semiconductor',type:'Batch · Vertical',img:'semi',d:'Batch equipment for semiconductor substrates with the highest cost performance.',k:['Si wafer 300 mm','Glass 500×500 mm','±2 ml dosing','< 30 particles'],
    s:[['Process','RCA / SPM / HF / O3 / DIO3 cleaning, Developing / Etching / Stripping, Oxidation / Special drying'],['Substrates','Si wafer up to 300 mm, Glass / Ceramics up to 500 × 500 mm'],['Dosing accuracy','±2 ml'],['Particles','RCA cleaning < 30 EA, Dry < 30 EA'],['Features','Non-metal components, perfect drying']]}],
- SITES:[['Korea','HQ · R&D Gumi · Mfg Jeungpyeong · Sales Anyang',1,127,36.1],['Malaysia','Manufacturing · Penang',1,101.7,3.1],['Germany','Eschborn · PM, engineering, parts',0,10.4,51.2],['India','Chennai · Customer service',0,78.9,21],['Vietnam','Ho Chi Minh City',0,106,16],['Singapore','Singapore',0,103.8,1.35],['USA','Perrysburg OH · Alpharetta GA (warehouse)',0,-84.4,33.8]],
+ SITES:[['Malaysia','Manufacturing · Penang',1],['Germany','Eschborn · PM, engineering, parts',0],['India','Chennai · Customer service',0],['Vietnam','Ho Chi Minh City',0],['Singapore','Singapore',0]],
+ KRHQ:[['Gumi','Headquarters · R&D'],['Jeungpyeong','Manufacturing'],['Anyang','Sales office']],
+ USS:[{n:'Sugar Hill Office',r:'S.E.A. America office',lat:34.106,lon:-84.034,own:1},{n:'Sugar Hill Factory',r:'S.E.A. America factory',lat:34.085,lon:-84.07,own:1},
+  {n:'Hanwha Cartersville',r:'Customer site · Hanwha Qcells',lat:34.165,lon:-84.80,own:0},{n:'Absolics Covington',r:'Customer site · Absolics',lat:33.597,lon:-83.86,own:0}],
  NOTI:[],
  CTC:[['Address','23-27, 4gongdan-ro 7-gil, Gumi-si, Gyeongsangbuk-do, Republic of Korea'],['Tel','+82-31-478-9106'],['Sales','+82-31-478-9109'],['Fax','+82-31-478-9107'],['E-mail','info@sea-e2e.com']],
  STATS:[[2010,'','Founded',0],[350,'','Units per year (2 plants)',1],[7,'','Countries',1],[10,'yrs+','Global No.1 in PV wet process',1]],
@@ -517,10 +552,10 @@ const EN={
   ['What substrate sizes are supported?','PV equipment handles up to M12 (210 × 210 mm), SEAline Glass Cleaner up to Generation 7, and SEAbatch SEMI Si wafers up to 300 mm and glass / ceramics up to 500 × 500 mm.'],
   ['Batch or inline?','Batch tools process many wafers vertically at once (SEABatch XL loads 600). Inline tools clean and etch substrates continuously as they move along the line.'],
   ['Where do you manufacture?','Two production facilities, in Korea and Malaysia, producing 350 units per year, with an R&D center in Gumi.'],
-  ['Do you support global sites?','Yes. Service bases in Germany, India, Vietnam, Singapore and the USA (Perrysburg OH, Alpharetta GA).'],
+  ['Do you support U.S. sites?','Yes. S.E.A. America runs an office and a factory in Sugar Hill, Georgia, supporting customer sites at Hanwha Cartersville and Absolics Covington. Other service bases are in Germany, India, Vietnam and Singapore.'],
   ['How do I get a quote?','Prices and lead times are not published. Contact info@sea-e2e.com or sales +82-31-478-9109.']]
 };
-const KO={PRODS,SITES,NOTI,CTC,STATS,PROBS,STEPS,INDS,FAQS};
+const KO={KRHQ,USS,PRODS,SITES,NOTI,CTC,STATS,PROBS,STEPS,INDS,FAQS};
 let LANG='ko';const tr=(k,e)=>LANG==='en'?e:k;
 
 // ---------- 렌더 ----------
@@ -576,14 +611,20 @@ const calc=()=>{const T=+tgt.value,U=+util.value,n=Math.ceil(T/(12000*U/100));
 tgt.addEventListener('input',calc);util.addEventListener('input',calc);
 // 거점 지도
 const map=document.getElementById('map');
-const drawMap=()=>{const W=map.clientWidth,H=map.clientHeight;if(!W)return;
-  const px=lo=>(lo+120)/(160+120)*W*.9+W*.05,py=la=>(60-la)/(60+6)*H*.8+H*.1,g=W<520?14:18;let d='';
+const drawMap=()=>{const W=map.clientWidth,H=map.clientHeight;if(!W||!USS)return;
+  // 북부 조지아 확대: 경도 -85.1~-83.4, 위도 33.35~34.45 (위도 보정)
+  const L0=-85.1,L1=-83.4,B0=33.35,B1=34.45,k=Math.cos(33.9*Math.PI/180),sx=(L1-L0)*k,sy=B1-B0,s=Math.min((W-60)/sx,(H-60)/sy),ox=(W-sx*s)/2,oy=(H-sy*s)/2;
+  const px=lo=>ox+(lo-L0)*k*s,py=la=>oy+(B1-la)*s,g=W<520?14:18;let d='';
   for(let y=g/2;y<H;y+=g)for(let x=g/2;x<W;x+=g)d+=`<circle cx="${x}" cy="${y}" r="1"/>`;
-  const kr=[px(127),py(36.1)];
-  const arcs=SITES.slice(1).map(([,,,lo,la])=>{const x=px(lo),y=py(la);return `<path d="M${kr[0]} ${kr[1]} Q ${(kr[0]+x)/2} ${Math.min(kr[1],y)-H*.28} ${x} ${y}" fill="none" stroke="url(#gl)" stroke-width="1.3" stroke-dasharray="3 6" opacity=".8"><animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2s" repeatCount="indefinite"/></path>`;}).join('');
-  const pins=SITES.map(([n,,f,lo,la],i)=>{const x=px(lo),y=py(la),c=f?'#ff007d':'#fc8609',dy=i===5?20:i===1?-8:4;
-    return `<circle cx="${x}" cy="${y}" r="8" fill="${c}" opacity=".2"><animate attributeName="r" values="6;20;6" dur="3s" begin="${i*.4}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".35;0;.35" dur="3s" begin="${i*.4}s" repeatCount="indefinite"/></circle><circle cx="${x}" cy="${y}" r="${f?5.5:4}" fill="${c}"/>${W<520&&!f?'':`<text x="${x+12}" y="${y+dy}">${n}</text>`}`;}).join('');
-  map.innerHTML=`<defs><linearGradient id="gl"><stop offset="0" stop-color="#ff007d"/><stop offset="1" stop-color="#fc8609"/></linearGradient></defs><g class="grid">${d}</g>${arcs}${pins}`;};
+  const hub=[px(-84.05),py(34.096)],atl=[px(-84.39),py(33.749)];
+  const routes=USS.filter(s=>!s.own).map((s,i)=>{const x=px(s.lon),y=py(s.lat);return `<path d="M${hub[0]} ${hub[1]} Q ${(hub[0]+x)/2} ${Math.min(hub[1],y)-H*.16} ${x} ${y}" fill="none" stroke="url(#gl)" stroke-width="1.6" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" from="0" to="-40" dur="2s" repeatCount="indefinite"/></path>`;}).join('');
+  // 라벨 위치: 겹치지 않게 점마다 방향 지정 (오피스 위, 공장 아래, 카터스빌 아래, 커빙턴 아래)
+  const LAB=[[10,-12,'start'],[10,20,'start'],[0,24,'middle'],[0,24,'middle']],small=W<520;
+  const pins=USS.map((s,i)=>{const x=px(s.lon),y=py(s.lat),c=s.own?'#ff007d':'#fc8609',[dx,dy,an]=LAB[i];
+    return `<circle cx="${x}" cy="${y}" r="9" fill="${c}" opacity=".22"><animate attributeName="r" values="7;20;7" dur="3s" begin="${i*.5}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".35;0;.35" dur="3s" begin="${i*.5}s" repeatCount="indefinite"/></circle>
+      <circle cx="${x}" cy="${y}" r="${s.own?7:6}" fill="${c}" stroke="#fff" stroke-width="2"/><text x="${x+dx}" y="${y+dy}" text-anchor="${an}" style="font-size:${small?12:13}px">${small?(i+1)+'':(i+1)+'  '+s.n}</text>`;}).join('');
+  map.innerHTML=`<defs><linearGradient id="gl"><stop offset="0" stop-color="#ff007d"/><stop offset="1" stop-color="#fc8609"/></linearGradient></defs><g class="grid">${d}</g>
+    <circle cx="${atl[0]}" cy="${atl[1]}" r="4" fill="#9a978f"/><text x="${atl[0]+8}" y="${atl[1]+4}" style="font-size:12px;fill:#8a877f;font-weight:500">Atlanta</text>${routes}${pins}`;};
 const mapRO=new ResizeObserver(drawMap);mapRO.observe(map);
 // 연락처 복사
 const ctc=document.getElementById('ctc');
@@ -619,7 +660,7 @@ const DICT={'로고':'Logo','를 눌러 들어가기':' — tap to enter','건�
  '기판':'Substrate','선호 방식':'Preferred method','처리량 계산':'Throughput planner','목표 처리량에 SEABatch XL 몇 대가 필요한지 대략 계산합니다.':'Roughly how many SEABatch XL units your target throughput needs.',
  '목표 처리량':'Target throughput','가동률':'Uptime','필요 대수 (12,000 w/h 기준)':'Units needed (at 12,000 w/h)',
  '계산기는 홈페이지에 공개된 최대 처리량(12,000 w/h)만으로 나눈 대략값입니다. 실제 구성은 영업 상담으로 확인하세요.':'A rough estimate using only the published maximum of 12,000 w/h. Confirm the configuration with sales.',
- '세 분야, 7개국':'Global operation in 7 countries','제조 공장 + 글로벌 서비스':'Production facility & global service','글로벌 서비스':'Global service',
+ '한국 본사, 미국 현장':'Korea headquarters, U.S. operations','본사 · 한국':'Headquarters · Korea','S.E.A. America · 조지아':'S.E.A. America · Georgia','미국 지사와 현장':'U.S. branch and customer sites','그 밖의 글로벌 거점':'Other global bases','미국 거점·현장은 도시 기준 대략 위치입니다.':'U.S. locations are shown at approximate city positions.','고객 현장':'Customer site','제조 공장 + 글로벌 서비스':'Production facility & global service','글로벌 서비스':'Global service',
  '본사 · 경상북도 구미시 4공단로 7길 23-27. 지도는 나라 위치만 나타냅니다.':'Expertise. Agility. Dedication. Our global team works worldwide to handle the diversified needs of every site. The map shows countries only.',
  '말레이시아 제조·서비스 거점과 함께한 5년.':'Five years with our Malaysian manufacturing and service base.','자주 묻는 질문':'FAQ','상담':'Contact',
  '사양·공정·서비스를 AI에게 먼저 물어보고, 견적과 일정은 영업팀과 이야기하세요.':'Ask the AI about specs, processes and service first, then talk to sales about quotes and schedules.',
@@ -637,7 +678,7 @@ STATIC_NODES.forEach(n=>orig.set(n,n.nodeValue));
 const firstMsg=document.querySelector('#log .msg.a');const firstKo=firstMsg?firstMsg.textContent:'';
 function setLang(l){
   LANG=l;document.documentElement.lang=l;
-  const D=l==='en'?EN:KO;({PRODS,SITES,NOTI,CTC,STATS,PROBS,STEPS,INDS,FAQS}=D);
+  const D=l==='en'?EN:KO;({KRHQ,USS,PRODS,SITES,NOTI,CTC,STATS,PROBS,STEPS,INDS,FAQS}=D);
   FILT=l==='en'?['All','Photovoltaic','Glass','Semiconductor']:['전체','태양광','Glass','반도체'];curF=FILT[0];
   STATIC_NODES.forEach(n=>{const k=orig.get(n),t=k.trim(),pre=k.slice(0,k.indexOf(t)),post=k.slice(k.indexOf(t)+t.length);n.nodeValue=l==='en'?pre+DICT[t]+post:k;});
   document.querySelectorAll('[placeholder]').forEach(el=>{el.dataset.ko=el.dataset.ko||el.placeholder;el.placeholder=l==='en'&&ATTR[el.dataset.ko]?ATTR[el.dataset.ko]:el.dataset.ko;});
@@ -647,6 +688,8 @@ function setLang(l){
   document.querySelectorAll('.lang').forEach(b=>b.setAttribute('aria-label',l==='en'?'한국어로 보기':'View in English'));
   renderStatic();drawProds();drawOpts();pick();calc();drawCtc();
   document.getElementById('sites').innerHTML=SITES.map(([n,r,f])=>`<p><i class="lg ${f?'f':'s'}"></i><b>${n}</b><span>${r}</span></p>`).join('');
+  document.getElementById('krhq').innerHTML=KRHQ.map(([n,r])=>`<p><b>${n}</b><span>${r}</span></p>`).join('');
+  document.getElementById('ussites').innerHTML=USS.map((s,i)=>`<article><span class="n" style="background:${s.own?'#ff007d':'#fc8609'}">${i+1}</span><b>${s.n}</b><span>${s.r}</span></article>`).join('');
   drawMap();if(window.__drawChips)window.__drawChips();
   document.querySelectorAll('#probs .rv,#steps .rv,#inds .rv').forEach(el=>el.classList.add('on'));
   try{localStorage.setItem('sea-lang-v2',l);}catch{}
@@ -855,7 +898,7 @@ const SYS0='너는 (주)에스이에이 S.E.A. Group 홈페이지의 AI 상담�
  '회사: 2010년 설립, 임직원 200명 이상, 2022년 매출 498억 원, 본사 경북 구미시 4공단로 7길 23-27. 태양광·반도체·PCB·FPD 습식 식각 장비 25년 이상 경험. 박막 태양전지·유리 기판용 습식 장비, TOPCon·PERC·HIT·탠덤 셀 습식 공정, 글라스 반도체 패키지 장비. 2022 Malaysia 5 Year Award.\n'+
  '사업: 태양광용 습식 장비, 반도체 패키지용 습식 장비, PCB·FPD(LCD) 습식 장비.\n'+
  '제품: '+PRODS.map(p=>p.n+'('+p.f+', '+p.type+'): '+p.d+' '+p.s.map(x=>x[0]+' '+x[1]).join('; ')).join(' / ')+'. 메인 페이지 모델명 SEABatch XL 600(배치), SEAline_WAR(인라인, 양면 설계).\n'+
- '거점: '+SITES.map(x=>x[0]+'('+x[1]+')').join(', ')+'. 제조 공장은 한국·말레이시아.\n'+
+ '거점: 한국 본사(구미 본사·R&D, 증평 제조, 안양 영업), 미국 S.E.A. America(조지아 슈가힐 사무소·공장, 고객 현장 한화 카터스빌·앱솔릭스 커빙턴), '+SITES.map(x=>x[0]+'('+x[1]+')').join(', ')+'. 제조 공장은 한국·말레이시아.\n'+
  '문의: 대표 +82-31-478-9106, 영업 +82-31-478-9109, 팩스 +82-31-478-9107, info@sea-e2e.com. 채용 https://sea-e2e.recruiter.co.kr/career/home, 영문 사이트 http://www.eng.sea-e2e.com.\n'+
  '규칙: 묻는 언어로 짧고 정확하게 답한다. 위에 없는 회사 정보(가격, 납기, 고객사, 사람)는 모른다고 말하고 영업 연락처를 안내한다. 공정·장비 일반 지식은 설명하되 확실하지 않으면 그렇다고 말한다. 마크다운 기호 없이 평문으로 답한다.';
 const hist=[];let sample=null,busy=false;
